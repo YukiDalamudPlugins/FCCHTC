@@ -328,7 +328,7 @@ namespace FCCH.Managers
                 var chest = Plugin.ObjectTable.FirstOrDefault(x => x.Name.ToString().Equals("Company Chest", StringComparison.OrdinalIgnoreCase));
                 if (chest != null)
                 {
-                    FCCH.Common.FCCHLog.Info($"[FCCH] Interacting with Company Chest (Oid: {chest.BaseId:X}).");
+                    FCCH.Common.FCCHLog.Info($"[FCCH] Interacting with Company Chest (Oid: {chest.DataId:X}).");
                     
                     var targetSystem = FFXIVClientStructs.FFXIV.Client.Game.Control.TargetSystem.Instance();
                     if (targetSystem != null)

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Dalamud.Bindings.ImGui;
+using ImGuiNET;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
@@ -73,7 +73,7 @@ namespace FCCH.UI
                 if (ImGui.BeginDragDropSource(ImGuiDragDropFlags.SourceNoPreviewTooltip))
                 {
                     currentDrag = uniqueId;
-                    ImGui.SetDragDropPayload(dragDropId, ReadOnlySpan<byte>.Empty);
+                    ImGui.SetDragDropPayload(dragDropId, IntPtr.Zero, 0);
                     ImGui.EndDragDropSource();
                 }
                 else if (currentDrag == uniqueId)
@@ -82,11 +82,11 @@ namespace FCCH.UI
                 }
             }
 
-            void TargetAction()
+            unsafe void TargetAction()
             {
                 if (!ImGui.BeginDragDropTarget()) return;
                 var payload = ImGui.AcceptDragDropPayload(dragDropId, ImGuiDragDropFlags.AcceptBeforeDelivery | ImGuiDragDropFlags.AcceptNoDrawDefaultRect);
-                if (!payload.IsNull && currentDrag != null && currentDrag != uniqueId)
+                if (payload.NativePtr != null && currentDrag != null && currentDrag != uniqueId)
                     onAcceptPayload(currentDrag);
                 ImGui.EndDragDropTarget();
             }

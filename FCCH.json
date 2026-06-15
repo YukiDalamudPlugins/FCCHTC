@@ -6,7 +6,7 @@
     "Description": "Free Company Chest Helper. Automate deposits, withdrawals, organization, crystals, workshop project pulls, and custom item lists.",
     "Punchline": "You ain't savin these slots, you puttin em to work.",
     "ApplicableVersion": "any",
-    "DalamudApiLevel": 15,
+    "DalamudApiLevel": 12,
     "Tags": [
         "fc",
         "chest",

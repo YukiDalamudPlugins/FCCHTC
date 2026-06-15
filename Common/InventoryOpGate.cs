@@ -6,14 +6,9 @@ namespace FCCH.Common
     {
         public static bool HasPendingOperation()
         {
-            var manager = InventoryManager.Instance();
-            if (manager == null) return false;
-
-            var ops = manager->PendingOperations;
-            for (var i = 0; i < ops.Length; i++)
-            {
-                if (!ops[i].IsEmpty) return true;
-            }
+            // NOTE (API12/TC): InventoryManager.PendingOperations was added in a later
+            // FFXIVClientStructs (API13+) and is not exposed in the API12 build, so we
+            // cannot inspect in-flight inventory operations here. Degrade to "none pending".
             return false;
         }
     }

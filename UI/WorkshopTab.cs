@@ -4,11 +4,12 @@ using System.Numerics;
 using System.Collections.Generic;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
-using Dalamud.Bindings.ImGui;
+using ImGuiNET;
 using Dalamud.Interface.Colors;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 using Lumina.Excel.Sheets;
+using FCCH.Common;
 using FCCH.GameData;
 using FCCH.IPC;
 using FCCH.Models;

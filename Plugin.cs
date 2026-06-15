@@ -30,7 +30,6 @@ namespace FCCH
         [PluginService] public static IPluginLog PluginLog { get; private set; } = null!;
         [PluginService] public static IChatGui Chat { get; private set; } = null!;
         [PluginService] public static ISigScanner SigScanner { get; private set; } = null!;
-        [PluginService] public static IPlayerState PlayerState { get; private set; } = null!;
         [PluginService] public static IAddonLifecycle AddonLifecycle { get; private set; } = null!;
         [PluginService] public static IContextMenu ContextMenu { get; private set; } = null!;
 

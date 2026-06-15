@@ -204,7 +204,7 @@ namespace FCCH.Managers
                 return false;
             }
 
-            invManager->MoveItemSlot(op.SrcInv, (ushort)op.SrcSlot, op.DstInv, (ushort)op.DstSlot, true);
+            invManager->MoveItemSlot(op.SrcInv, (ushort)op.SrcSlot, op.DstInv, (ushort)op.DstSlot, 1);
             DebugLog($"[Move/Slot-Fallback] Item#{op.ItemId} ({op.SrcInv}:{op.SrcSlot} -> {op.DstInv}:{op.DstSlot})");
             return true;
         }

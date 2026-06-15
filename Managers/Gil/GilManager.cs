@@ -56,8 +56,8 @@ namespace FCCH.Managers.Gil
             try
             {
                 var values = stackalloc AtkValue[2];
-                values[0] = new AtkValue() { Type = FFXIVClientStructs.FFXIV.Component.GUI.AtkValueType.Int, Int = (int)transaction.Amount };
-                values[1] = new AtkValue() { Type = FFXIVClientStructs.FFXIV.Component.GUI.AtkValueType.Int, Int = 0 };
+                values[0] = new AtkValue() { Type = FFXIVClientStructs.FFXIV.Component.GUI.ValueType.Int, Int = (int)transaction.Amount };
+                values[1] = new AtkValue() { Type = FFXIVClientStructs.FFXIV.Component.GUI.ValueType.Int, Int = 0 };
 
                 addon->FireCallback(1, values);
 
@@ -162,10 +162,10 @@ namespace FCCH.Managers.Gil
                         var val = values[i];
                         string valStr = val.Type switch
                         {
-                            FFXIVClientStructs.FFXIV.Component.GUI.AtkValueType.Int => $"Int={val.Int}",
-                            FFXIVClientStructs.FFXIV.Component.GUI.AtkValueType.UInt => $"UInt={val.UInt}",
-                            FFXIVClientStructs.FFXIV.Component.GUI.AtkValueType.Bool => $"Bool={val.Byte}",
-                            FFXIVClientStructs.FFXIV.Component.GUI.AtkValueType.Float => $"Float={val.Float}",
+                            FFXIVClientStructs.FFXIV.Component.GUI.ValueType.Int => $"Int={val.Int}",
+                            FFXIVClientStructs.FFXIV.Component.GUI.ValueType.UInt => $"UInt={val.UInt}",
+                            FFXIVClientStructs.FFXIV.Component.GUI.ValueType.Bool => $"Bool={val.Byte}",
+                            FFXIVClientStructs.FFXIV.Component.GUI.ValueType.Float => $"Float={val.Float}",
                             _ => $"Type={val.Type}"
                         };
                         ChatHelper.Info($"[DEBUG] values[{i}]: {valStr}");

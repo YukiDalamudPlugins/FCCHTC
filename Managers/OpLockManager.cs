@@ -29,7 +29,7 @@ namespace FCCH.Managers
             try
             {
                 DebugLogCall(instance, inventoryType);
-                GameMain.ExecuteCommand(404, inventoryType);
+                FCCH.Common.GameFunctions.ExecuteCommand(404, inventoryType);
             }
             catch (Exception e)
             {

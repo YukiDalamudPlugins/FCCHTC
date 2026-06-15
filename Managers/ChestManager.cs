@@ -38,16 +38,16 @@ namespace FCCH.Managers
             }
 
             var values = stackalloc AtkValue[2];
-            values[0].Type = FFXIVClientStructs.FFXIV.Component.GUI.AtkValueType.Int;
+            values[0].Type = FFXIVClientStructs.FFXIV.Component.GUI.ValueType.Int;
             values[0].Int = 0;
-            values[1].Type = FFXIVClientStructs.FFXIV.Component.GUI.AtkValueType.Int;
+            values[1].Type = FFXIVClientStructs.FFXIV.Component.GUI.ValueType.Int;
             values[1].Int = targetIndex;
 
             addon->FireCallback((uint)Constants.FC_CHEST_CALLBACK_ID, values);
 
             if (targetPage != InventoryType.FreeCompanyGil)
             {
-                GameMain.ExecuteCommand(404, (int)targetPage);
+                Common.GameFunctions.ExecuteCommand(404, (int)targetPage);
             }
         }
 
@@ -78,9 +78,9 @@ namespace FCCH.Managers
             Common.PerfCounter.RecordScanFCChest();
             _inventoryScanner.Update();
             CachedItems.Clear();
-            if (Plugin.ObjectTable.LocalPlayer != null)
+            if (Plugin.ClientState.LocalPlayer != null)
             {
-                ScannedCharacterName = Plugin.ObjectTable.LocalPlayer.Name.ToString();
+                ScannedCharacterName = Plugin.ClientState.LocalPlayer.Name.ToString();
             }
 
             foreach (var kvp in ChestState)
