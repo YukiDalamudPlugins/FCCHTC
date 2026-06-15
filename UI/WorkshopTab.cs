@@ -63,13 +63,13 @@ namespace FCCH.UI
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.TextDisabled($"Projects ({projectCount}) | Materials: {totalMats.Count}, {missingCount} missing");
+                ImGui.TextDisabled($"專案({projectCount})| 材料：{totalMats.Count},缺 {missingCount}");
 
                 ImGui.TableNextColumn();
                 if (projectCount > 0)
                 {
                     ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-                    if (ImGui.Button("Clear List", new Vector2(-1, 0)))
+                    if (ImGui.Button("清空清單", new Vector2(-1, 0)))
                     {
                         _helper.ShoppingList.Clear();
                         _expandedProjects.Clear();
@@ -81,7 +81,7 @@ namespace FCCH.UI
                 if (projectCount > 0 && _workshoppaIPC.IsAvailable)
                 {
                     ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-                    if (ImGui.Button("Queue", new Vector2(-1, 0)))
+                    if (ImGui.Button("排入佇列", new Vector2(-1, 0)))
                     {
                         int success = 0;
                         foreach (var item in _helper.ShoppingList)
@@ -90,27 +90,27 @@ namespace FCCH.UI
                                 success++;
                         }
                         if (success > 0)
-                            Common.ChatHelper.Info($"Queued {success} projects to Workshoppa.");
+                            Common.ChatHelper.Info($"\u5df2\u5c07 {success} \u500b\u5c08\u6848\u6392\u5165 Workshoppa\u3002");
                         else
-                            Common.ChatHelper.Warning("Failed to queue \u2014 is Workshoppa busy?");
+                            Common.ChatHelper.Warning("\u6392\u5165\u5931\u6557 \u2014 Workshoppa \u662f\u5426\u5fd9\u788c\u4e2d?");
                     }
                     ImGui.PopStyleColor();
-                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("Send projects to Workshoppa queue");
+                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("將專案送進 Workshoppa 佇列");
                 }
 
                 ImGui.TableNextColumn();
                 if (_workshoppaIPC.IsAvailable)
                 {
                     ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-                    if (ImGui.Button("Clear WS", new Vector2(-1, 0)))
+                    if (ImGui.Button("\u6e05\u7a7a WS", new Vector2(-1, 0)))
                     {
                         if (_workshoppaIPC.ClearQueue())
-                            Common.ChatHelper.Info("Workshoppa queue cleared.");
+                            Common.ChatHelper.Info("\u5df2\u6e05\u7a7a Workshoppa \u4f47\u5217\u3002");
                         else
-                            Common.ChatHelper.Warning("Failed to clear \u2014 is Workshoppa busy?");
+                            Common.ChatHelper.Warning("\u6e05\u7a7a\u5931\u6557 \u2014 Workshoppa \u662f\u5426\u5fd9\u788c\u4e2d?");
                     }
                     ImGui.PopStyleColor();
-                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("Clear Workshoppa queue");
+                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("清空 Workshoppa 佇列");
                 }
                 ImGui.EndTable();
             }
@@ -138,8 +138,8 @@ namespace FCCH.UI
             {
                 if (_helper.ShoppingList.Count == 0)
                 {
-                    ImGui.TextDisabled("No workshop projects.");
-                    ImGui.TextDisabled("Use search below to add.");
+                    ImGui.TextDisabled("沒有工房專案。");
+                    ImGui.TextDisabled("用下方搜尋加入。");
                 }
                 else
                 {
@@ -162,21 +162,21 @@ namespace FCCH.UI
 
             if (ImGui.BeginChild("WorkshopMaterialsLoc", new Vector2(0, matsHeight), true))
             {
-                if (ImGui.CollapsingHeader($"Total Materials Needed ({totalMats.Count})###TotalMaterialsHeader", ImGuiTreeNodeFlags.DefaultOpen))
+                if (ImGui.CollapsingHeader($"所需材料總計({totalMats.Count})###TotalMaterialsHeader", ImGuiTreeNodeFlags.DefaultOpen))
                 {
                     if (totalMats.Count == 0)
                     {
-                        ImGui.TextDisabled("No materials needed.");
+                        ImGui.TextDisabled("不需要材料。");
                     }
                     else
                     {
                         if (ImGui.BeginTable("TotalMatsTable", 4, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY))
                         {
                             ImGui.TableSetupScrollFreeze(0, 1);
-                            ImGui.TableSetupColumn("Material", ImGuiTableColumnFlags.WidthStretch);
-                            ImGui.TableSetupColumn("Need", ImGuiTableColumnFlags.WidthFixed, 50);
-                            ImGui.TableSetupColumn("Have", ImGuiTableColumnFlags.WidthFixed, 50);
-                            ImGui.TableSetupColumn("Diff", ImGuiTableColumnFlags.WidthFixed, 60);
+                            ImGui.TableSetupColumn("材料", ImGuiTableColumnFlags.WidthStretch);
+                            ImGui.TableSetupColumn("需要", ImGuiTableColumnFlags.WidthFixed, 50);
+                            ImGui.TableSetupColumn("持有", ImGuiTableColumnFlags.WidthFixed, 50);
+                            ImGui.TableSetupColumn("差額", ImGuiTableColumnFlags.WidthFixed, 60);
                             ImGui.TableHeadersRow();
 
                             foreach (var mat in totalMats)
@@ -221,7 +221,7 @@ namespace FCCH.UI
             float refreshWidth = 80;
             float searchWidth = ImGui.GetContentRegionAvail().X - refreshWidth - ImGui.GetStyle().ItemSpacing.X;
             ImGui.SetNextItemWidth(searchWidth);
-            if (ImGui.BeginCombo("##addCraftSearch", "Search workshop projects...", ImGuiComboFlags.HeightLarge | ImGuiComboFlags.PopupAlignLeft))
+            if (ImGui.BeginCombo("##addCraftSearch", "搜尋工房專案...", ImGuiComboFlags.HeightLarge | ImGuiComboFlags.PopupAlignLeft))
             {
                 ImGui.PopStyleColor(2);
                 ImGui.SetNextItemWidth(-1);
@@ -242,7 +242,7 @@ namespace FCCH.UI
                     }
                     else
                     {
-                        ImGui.TextDisabled("No projects found");
+                        ImGui.TextDisabled("找不到專案");
                     }
                 }
                 ImGui.EndCombo();
@@ -256,7 +256,7 @@ namespace FCCH.UI
             var gate = _helper.CanStartUserAction();
             if (!gate.CanRun) ImGui.BeginDisabled();
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-            if (ImGui.Button("Refresh", new Vector2(refreshWidth, 0)))
+            if (ImGui.Button("重新整理", new Vector2(refreshWidth, 0)))
             {
                 TryRefreshChestData();
             }
@@ -267,8 +267,8 @@ namespace FCCH.UI
                 ImGui.SetTooltip(!gate.CanRun
                     ? gate.Reason
                     : IsChestAddonVisible()
-                    ? "Refresh Chest Data"
-                    : "Refresh Chest Data\nOpen the Company Chest to update.");
+                    ? "重新整理寶物庫資料"
+                    : "重新整理寶物庫資料\n請開啟部隊寶物庫以更新。");
             }
         }
 
@@ -396,18 +396,18 @@ namespace FCCH.UI
 
                 ImGui.TableNextColumn();
                 if (isReady)
-                    ImGui.TextColored(ImGuiColors.HealerGreen, "OK");
+                    ImGui.TextColored(ImGuiColors.HealerGreen, "完成");
                 else
                     ImGui.TextColored(ImGuiColors.DalamudOrange, $"{readyCount}/{totalCount}");
 
                 ImGui.TableNextColumn();
-                CellActionButton.DrawText("M", $"max{index}", "Max craftable", () =>
+                CellActionButton.DrawText("M", $"max{index}", "可製作的最大量", () =>
                 {
                     item.Quantity = CalculateMaxCraft(item.Craft);
                 });
 
                 ImGui.TableNextColumn();
-                CellActionButton.DrawIcon(FontAwesomeIcon.Minus, $"delete{index}", "Remove", () =>
+                CellActionButton.DrawIcon(FontAwesomeIcon.Minus, $"delete{index}", "移除", () =>
                 {
                     _helper.ShoppingList.RemoveAt(index);
                     _expandedProjects.Remove(index);
@@ -421,9 +421,9 @@ namespace FCCH.UI
                 ImGui.Indent(20);
                 if (ImGui.BeginTable($"MatTable{index}", 3, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
                 {
-                    ImGui.TableSetupColumn("Material", ImGuiTableColumnFlags.WidthStretch);
-                    ImGui.TableSetupColumn("Need", ImGuiTableColumnFlags.WidthFixed, 50);
-                    ImGui.TableSetupColumn("Have", ImGuiTableColumnFlags.WidthFixed, 50);
+                    ImGui.TableSetupColumn("材料", ImGuiTableColumnFlags.WidthStretch);
+                    ImGui.TableSetupColumn("需要", ImGuiTableColumnFlags.WidthFixed, 50);
+                    ImGui.TableSetupColumn("持有", ImGuiTableColumnFlags.WidthFixed, 50);
                     ImGui.TableHeadersRow();
 
                     foreach (var mat in materials)
@@ -478,7 +478,7 @@ namespace FCCH.UI
             float avail = ImGui.GetContentRegionAvail().X;
             ImGui.SetNextItemWidth(avail * 0.45f);
 
-            if (ImGui.BeginCombo("##workPresetSel", string.IsNullOrEmpty(_selectedPresetName) ? "Load Preset..." : _selectedPresetName))
+            if (ImGui.BeginCombo("##workPresetSel", string.IsNullOrEmpty(_selectedPresetName) ? "載入預設集..." : _selectedPresetName))
             {
                 foreach (var presetName in _configuration.WorkshopPresets.Keys)
                 {
@@ -501,7 +501,7 @@ namespace FCCH.UI
             }
             ImGui.PopFont();
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Save Current Projects as Preset");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("將目前專案儲存為預設集");
 
             ImGui.SameLine(0, 5);
 
@@ -518,12 +518,12 @@ namespace FCCH.UI
             }
             ImGui.PopFont();
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Delete Preset");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("刪除預設集");
 
             ImGui.SameLine(0, 15);
 
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-            if (ImGui.Button("Export"))
+            if (ImGui.Button("匯出"))
             {
                 var exportData = _helper.ShoppingList.Select(x => new PresetShoppingItem
                 {
@@ -533,20 +533,20 @@ namespace FCCH.UI
 
                 if (Common.ExportHelper.Export(Common.ExportHelper.HEADER_WORKSHOP, exportData))
                 {
-                    Common.ChatHelper.Info($"Exported {exportData.Count} workshop projects to clipboard.");
+                    Common.ChatHelper.Info($"已匯出 {exportData.Count} 個工房專案到剪貼簿。");
                 }
                 else
                 {
-                    Common.ChatHelper.Warning("Failed to export workshop projects.");
+                    Common.ChatHelper.Warning("匯出工房專案失敗。");
                 }
             }
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Export to clipboard");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("匯出到剪貼簿");
 
             ImGui.SameLine(0, 5);
 
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-            if (ImGui.Button("Import"))
+            if (ImGui.Button("匯入"))
             {
                 var (result, data) = Common.ExportHelper.Import<List<PresetShoppingItem>>(Common.ExportHelper.HEADER_WORKSHOP);
                 if (result == Common.ExportHelper.ImportResult.Success && data != null)
@@ -560,15 +560,15 @@ namespace FCCH.UI
                             _helper.ShoppingList.Add(new ShoppingItem { Craft = craft, Quantity = item.Quantity });
                         }
                     }
-                    Common.ChatHelper.Info($"Imported {data.Count} workshop projects.");
+                    Common.ChatHelper.Info($"已匯入 {data.Count} 個工房專案。");
                 }
                 else
                 {
-                    Common.ChatHelper.Warning(Common.ExportHelper.GetErrorMessage(result, "Workshop"));
+                    Common.ChatHelper.Warning(Common.ExportHelper.GetErrorMessage(result, "工房清單"));
                 }
             }
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Import from clipboard");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("從剪貼簿匯入");
         }
 
         private void LoadPreset(string name)
@@ -591,16 +591,16 @@ namespace FCCH.UI
 
         private void DrawSavePresetModal()
         {
-            if (_showSavePresetModal) ImGui.OpenPopup("Save Workshop Preset");
+            if (_showSavePresetModal) ImGui.OpenPopup("儲存工房預設集");
 
-            if (ImGui.BeginPopupModal("Save Workshop Preset", ref _showSavePresetModal, ImGuiWindowFlags.AlwaysAutoResize))
+            if (ImGui.BeginPopupModal("儲存工房預設集", ref _showSavePresetModal, ImGuiWindowFlags.AlwaysAutoResize))
             {
-                ImGui.Text("Enter Preset Name:");
+                ImGui.Text("輸入預設集名稱：");
                 ImGui.InputText("##wkPresetName", ref _presetNameInput, 64);
 
                 ImGui.Spacing();
 
-                if (ImGui.Button("Save", new Vector2(120, 0)))
+                if (ImGui.Button("儲存", new Vector2(120, 0)))
                 {
                     if (!string.IsNullOrWhiteSpace(_presetNameInput))
                     {
@@ -618,7 +618,7 @@ namespace FCCH.UI
                     }
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Cancel", new Vector2(120, 0)))
+                if (ImGui.Button("取消", new Vector2(120, 0)))
                 {
                     _showSavePresetModal = false;
                     ImGui.CloseCurrentPopup();

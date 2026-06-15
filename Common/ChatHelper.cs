@@ -30,7 +30,7 @@ namespace FCCH.Common
         {
             var seString = new SeStringBuilder()
                 .AddUiForeground(ColorOrange)
-                .AddText("[FCCH] Debug:")
+                .AddText("[FCCH] 除錯：")
                 .AddUiForegroundOff()
                 .AddText($" {message}")
                 .Build();
@@ -41,7 +41,7 @@ namespace FCCH.Common
         {
             var seString = new SeStringBuilder()
                 .AddUiForeground(ColorYellow)
-                .AddText("[FCCH] Warning:")
+                .AddText("[FCCH] 警告：")
                 .AddUiForegroundOff()
                 .AddText($" {message}")
                 .Build();
@@ -52,7 +52,7 @@ namespace FCCH.Common
         {
             var seString = new SeStringBuilder()
                 .AddUiForeground(ColorRed)
-                .AddText("[FCCH] Error:")
+                .AddText("[FCCH] 錯誤：")
                 .AddUiForegroundOff()
                 .AddText($" {message}")
                 .Build();
@@ -77,7 +77,7 @@ namespace FCCH.Common
 
             foreach (var kvp in failures)
             {
-                Warning($"Failed to process {kvp.Value} items due to: {kvp.Key} (Enable Verbose Mode for details).");
+                Warning($"因「{kvp.Key}」無法處理 {kvp.Value} 個物品(開啟詳細模式可查看細節)。");
             }
         }
     }

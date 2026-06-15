@@ -24,9 +24,9 @@ namespace FCCH.UI
         {
             if (ImGui.BeginChild("GeneralTabScroll", new Vector2(0, 0), true))
             {
-                if (DrawSection("Audio"))
+                if (DrawSection("音效"))
                 {
-                    DrawSettingRow("Completion Sound", () =>
+                    DrawSettingRow("完成音效", () =>
                     {
                         bool playSound = _configuration.PlayCompletionSound;
                         if (ImGui.Checkbox("##complSound", ref playSound))
@@ -36,11 +36,11 @@ namespace FCCH.UI
                         }
                     });
 
-                    DrawSettingRow("Custom Sound Path", () =>
+                    DrawSettingRow("自訂音效路徑", () =>
                     {
                         string path = _configuration.CustomSoundPath;
                         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X - 35);
-                        if (ImGui.InputTextWithHint("##soundPath", "Default: Assets\\Completion.mp3", ref path, 1000))
+                        if (ImGui.InputTextWithHint("##soundPath", "預設：Assets\\Completion.mp3", ref path, 1000))
                         {
                             _configuration.CustomSoundPath = path;
                             _configuration.Save();
@@ -49,7 +49,7 @@ namespace FCCH.UI
                         ImGui.PushFont(UiBuilder.IconFont);
                         if (ImGui.Button(FontAwesomeIcon.Folder.ToIconString() + "##soundBrowse"))
                         {
-                            _fileDialogManager.OpenFileDialog("Select Sound File", "Audio Files{.mp3,.wav}", (success, selectedPath) =>
+                            _fileDialogManager.OpenFileDialog("選擇音效檔", "音效檔{.mp3,.wav}", (success, selectedPath) =>
                             {
                                 if (success)
                                 {
@@ -63,9 +63,9 @@ namespace FCCH.UI
                 }
                 ImGui.Spacing();
 
-                if (DrawSection("Confirmations"))
+                if (DrawSection("確認提示"))
                 {
-                    DrawSettingRow("Skip Deposit Confirm", () =>
+                    DrawSettingRow("略過存入確認", () =>
                     {
                         bool disableDep = _configuration.DisableAskDepositAll;
                         if (ImGui.Checkbox("##skipDep", ref disableDep))
@@ -75,7 +75,7 @@ namespace FCCH.UI
                         }
                     });
 
-                    DrawSettingRow("Skip Withdraw Confirm", () =>
+                    DrawSettingRow("略過取出確認", () =>
                     {
                         bool disableWith = _configuration.DisableAskWithdrawAll;
                         if (ImGui.Checkbox("##skipWith", ref disableWith))
@@ -87,9 +87,9 @@ namespace FCCH.UI
                 }
                 ImGui.Spacing();
 
-                if (DrawSection("Toolbar"))
+                if (DrawSection("工具列"))
                 {
-                    DrawSettingRow("Lock Toolbar Position", () =>
+                    DrawSettingRow("鎖定工具列位置", () =>
                     {
                         bool locked = _configuration.ToolbarLocked;
                         if (ImGui.Checkbox("##toolbarLocked", ref locked))
@@ -99,21 +99,21 @@ namespace FCCH.UI
                         }
                         ImGui.SameLine();
                         ImGui.TextDisabled("(?)");
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("When locked, the toolbar stays at its current position. When unlocked, you can drag it freely.");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("鎖定時工具列維持在目前位置;解鎖後可自由拖曳。");
                     });
 
-                    DrawSettingRow("Snap to Chest", () =>
+                    DrawSettingRow("貼齊寶物庫", () =>
                     {
-                        if (ImGui.Button("Snap##toolbarSnap", new Vector2(120, 0)))
+                        if (ImGui.Button("貼齊##toolbarSnap", new Vector2(120, 0)))
                         {
                             _configuration.ToolbarPosX = -1f;
                             _configuration.ToolbarPosY = -1f;
                             _configuration.Save();
                         }
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Reset toolbar position back to its attached spot above the Company Chest.");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("將工具列位置重設回部隊寶物庫上方的附著位置。");
                     });
 
-                    DrawSettingRow("Snap to Grid", () =>
+                    DrawSettingRow("貼齊格線", () =>
                     {
                         bool snapGrid = _configuration.ToolbarSnapToGrid;
                         if (ImGui.Checkbox("##toolbarSnapGrid", ref snapGrid))
@@ -123,16 +123,16 @@ namespace FCCH.UI
                         }
                         ImGui.SameLine();
                         ImGui.TextDisabled("(?)");
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("While unlocked, snap toolbar position to a 10px grid when dragging.");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("解鎖時拖曳工具列會貼齊 10px 格線。");
                     });
 
                     DrawToolbarButtonLayout();
                 }
                 ImGui.Spacing();
 
-                if (DrawSection("Behavior Rules"))
+                if (DrawSection("行為規則"))
                 {
-                    DrawSettingRow("Lower Quality on Deposit", () =>
+                    DrawSettingRow("存入時降級為 NQ", () =>
                     {
                         bool lowerQuality = _configuration.LowerQualityOnDeposit;
                         if (ImGui.Checkbox("##lowerQual", ref lowerQuality))
@@ -142,10 +142,10 @@ namespace FCCH.UI
                         }
                         ImGui.SameLine();
                         ImGui.TextDisabled("(?)");
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Automatically convert HQ items to NQ before depositing.");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("存入前自動將 HQ 物品轉為 NQ。");
                     });
 
-                    DrawSettingRow("Leave One per Stack", () =>
+                    DrawSettingRow("每疊保留一個", () =>
                     {
                         bool leaveOne = _configuration.LeaveOneItemPerStack;
                         if (ImGui.Checkbox("##leaveOne", ref leaveOne))
@@ -155,10 +155,10 @@ namespace FCCH.UI
                         }
                         ImGui.SameLine();
                         ImGui.TextDisabled("(?)");
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Always leave at least 1 item in the FC Chest when withdrawing.");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("取出時部隊寶物庫至少保留 1 個物品。");
                     });
 
-                    DrawSettingRow("Compact Item Names", () =>
+                    DrawSettingRow("精簡物品名稱", () =>
                     {
                         bool compactNames = _configuration.CompactItemNames;
                         if (ImGui.Checkbox("##compactItemNames", ref compactNames))
@@ -168,10 +168,10 @@ namespace FCCH.UI
                         }
                         ImGui.SameLine();
                         ImGui.TextDisabled("(?)");
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Shorten supported item names in Custom, Ignore, and Organizer lists.");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("在自訂、忽略、整理清單中縮短支援的物品名稱。");
                     });
 
-                    DrawSettingRow("Item Context Menu", () =>
+                    DrawSettingRow("物品右鍵選單", () =>
                     {
                         bool enabled = _configuration.EnableItemContextMenuEntries;
                         if (ImGui.Checkbox("##itemContextMenu", ref enabled))
@@ -181,24 +181,24 @@ namespace FCCH.UI
                         }
                         ImGui.SameLine();
                         ImGui.TextDisabled("(?)");
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Add FCCH entries to supported item right-click menus.");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("在支援的物品右鍵選單中加入 FCCH 項目。");
                     });
                 }
                 ImGui.Spacing();
 
-                if (DrawSection("Timing"))
+                if (DrawSection("延遲時間"))
                 {
                     ImGui.PushStyleColor(ImGuiCol.ChildBg, new Vector4(0.2f, 0.2f, 0.1f, 0.5f));
                     if (ImGui.BeginChild("TimingWarning", new Vector2(ImGui.GetContentRegionAvail().X, 40), true))
                     {
-                        ImGui.TextColored(ImGuiColors.DalamudOrange, "Low delay may cause desync on slow connections.");
+                        ImGui.TextColored(ImGuiColors.DalamudOrange, "延遲過低在連線較慢時可能造成不同步。");
                     }
                     ImGui.EndChild();
                     ImGui.PopStyleColor();
 
                     ImGui.Spacing();
 
-                    DrawSettingRow("Deposit Delay", () =>
+                    DrawSettingRow("存入延遲", () =>
                     {
                         int depositDelay = _configuration.MoveDelayInMs;
                         ImGui.SetNextItemWidth(180);
@@ -209,7 +209,7 @@ namespace FCCH.UI
                         }
                     });
 
-                    DrawSettingRow("Withdraw Delay", () =>
+                    DrawSettingRow("取出延遲", () =>
                     {
                         int withdrawDelay = _configuration.WithdrawDelayInMs;
                         ImGui.SetNextItemWidth(180);
@@ -222,9 +222,9 @@ namespace FCCH.UI
                 }
                 ImGui.Spacing();
 
-                if (DrawSection("Diagnostics"))
+                if (DrawSection("診斷"))
                 {
-                    DrawSettingRow("Enable Debug Mode", () =>
+                    DrawSettingRow("啟用除錯模式", () =>
                     {
                         bool debug = _configuration.DebugMode;
                         if (ImGui.Checkbox("##debugMode", ref debug))
@@ -234,11 +234,11 @@ namespace FCCH.UI
                         }
                     });
 
-                    DrawSettingRow("Custom Debug Path", () =>
+                    DrawSettingRow("自訂除錯紀錄路徑", () =>
                     {
                         string logPath = _configuration.DebugLogPath;
                         ImGui.SetNextItemWidth(220f);
-                        if (ImGui.InputTextWithHint("##logPath", "Default: FCCH_Debug.log", ref logPath, 256))
+                        if (ImGui.InputTextWithHint("##logPath", "預設：FCCH_Debug.log", ref logPath, 256))
                         {
                             _configuration.DebugLogPath = logPath;
                             _configuration.Save();
@@ -247,7 +247,7 @@ namespace FCCH.UI
                         ImGui.PushFont(UiBuilder.IconFont);
                         if (ImGui.Button(FontAwesomeIcon.Folder.ToIconString() + "##logBrowse"))
                         {
-                            _fileDialogManager.SaveFileDialog("Select Log File", ".log", "FCCH_Debug.log", ".log", (success, selectedPath) =>
+                            _fileDialogManager.SaveFileDialog("選擇紀錄檔", ".log", "FCCH_Debug.log", ".log", (success, selectedPath) =>
                             {
                                 if (success)
                                 {
@@ -259,7 +259,7 @@ namespace FCCH.UI
                         ImGui.PopFont();
                     });
 
-                    DrawSettingRow("Verbose Logging", () =>
+                    DrawSettingRow("詳細紀錄", () =>
                     {
                         bool verbose = _configuration.VerboseMode;
                         if (ImGui.Checkbox("##verbose", ref verbose))
@@ -270,16 +270,16 @@ namespace FCCH.UI
                     });
 
                     ImGui.Spacing();
-                    ImGui.TextDisabled("Internal diagnostic commands");
+                    ImGui.TextDisabled("內部診斷指令");
                     ImGui.PushStyleColor(ImGuiCol.ChildBg, new Vector4(0.2f, 0.2f, 0.1f, 0.5f));
                     float diagnosticBoxHeight = ImGui.GetTextLineHeightWithSpacing() * 5 + ImGui.GetStyle().WindowPadding.Y * 2;
                     if (ImGui.BeginChild("InternalDiagnosticsBox", new Vector2(ImGui.GetContentRegionAvail().X, diagnosticBoxHeight), true))
                     {
-                        ImGui.TextColored(ImGuiColors.DalamudOrange, "debug - toggle debug logging");
-                        ImGui.TextColored(ImGuiColors.DalamudOrange, "gildebug - trace gil callbacks");
-                        ImGui.TextColored(ImGuiColors.DalamudOrange, "accessprobe - dump live chest addon permission state");
-                        ImGui.TextColored(ImGuiColors.DalamudOrange, "fcperms [row] - dump raw FC rank permission bytes");
-                        ImGui.TextColored(ImGuiColors.DalamudOrange, "ipctest - invoke FCCH IPC surface and report pass/fail to /xllog");
+                        ImGui.TextColored(ImGuiColors.DalamudOrange, "debug - 切換除錯紀錄");
+                        ImGui.TextColored(ImGuiColors.DalamudOrange, "gildebug - 追蹤金幣 callback");
+                        ImGui.TextColored(ImGuiColors.DalamudOrange, "accessprobe - 輸出目前寶物庫權限狀態");
+                        ImGui.TextColored(ImGuiColors.DalamudOrange, "fcperms [row] - 輸出部隊階級權限原始位元組");
+                        ImGui.TextColored(ImGuiColors.DalamudOrange, "ipctest - 呼叫 FCCH IPC 並將結果輸出到 /xllog");
                     }
                     ImGui.EndChild();
                     ImGui.PopStyleColor();
@@ -294,7 +294,7 @@ namespace FCCH.UI
                 ImGui.SetCursorPosX((ImGui.GetContentRegionAvail().X - buttonWidth) * 0.5f + ImGui.GetCursorPosX());
                 var style = ImGui.GetStyle();
                 ImGui.PushStyleColor(ImGuiCol.ButtonHovered, style.Colors[(int)ImGuiCol.TabHovered]);
-                if (ImGui.Button("Reset to Defaults", new Vector2(buttonWidth, 0)))
+                if (ImGui.Button("重設為預設值", new Vector2(buttonWidth, 0)))
                 {
                     _configuration.PlayCompletionSound = false;
                     _configuration.CustomSoundPath = "";
@@ -317,7 +317,7 @@ namespace FCCH.UI
                     _configuration.Save();
                 }
                 ImGui.PopStyleColor();
-                if (ImGui.IsItemHovered()) ImGui.SetTooltip("Reset all General settings to their default values.");
+                if (ImGui.IsItemHovered()) ImGui.SetTooltip("將所有「一般」設定重設為預設值。");
 
                 ImGui.EndChild();
             }
@@ -342,14 +342,14 @@ namespace FCCH.UI
             if (_configuration.EnsureToolbarButtons())
                 _configuration.Save();
 
-            DrawSettingRow("Toolbar Buttons", () =>
+            DrawSettingRow("工具列按鈕", () =>
             {
-                if (ImGui.Button("Reset##toolbarButtonsReset", new Vector2(120, 0)))
+                if (ImGui.Button("重設##toolbarButtonsReset", new Vector2(120, 0)))
                 {
                     _configuration.ResetToolbarButtons();
                     _configuration.Save();
                 }
-                if (ImGui.IsItemHovered()) ImGui.SetTooltip("Restore the default toolbar button order and visibility.");
+                if (ImGui.IsItemHovered()) ImGui.SetTooltip("還原預設的工具列按鈕順序與顯示。");
             });
 
             var tableWidth = CalculateToolbarButtonTableWidth();
@@ -421,7 +421,7 @@ namespace FCCH.UI
 
             if (mustKeepVisible) ImGui.EndDisabled();
             if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
-                ImGui.SetTooltip(mustKeepVisible ? "At least one toolbar button must remain visible." : visible ? "Shown on toolbar" : "Hidden from toolbar");
+                ImGui.SetTooltip(mustKeepVisible ? "至少要保留一個工具列按鈕顯示。" : visible ? "顯示於工具列" : "已從工具列隱藏");
         }
 
         private int CountVisibleToolbarButtons()
@@ -438,14 +438,14 @@ namespace FCCH.UI
         {
             return id switch
             {
-                ToolbarButtonId.Settings => "Settings",
-                ToolbarButtonId.Deposit => "Deposit",
-                ToolbarButtonId.DepositCustom => "Deposit Custom List",
-                ToolbarButtonId.DepositDuplicates => "Deposit Duplicates",
-                ToolbarButtonId.Crystals => "Crystals",
-                ToolbarButtonId.Withdraw => "Withdraw",
-                ToolbarButtonId.WithdrawCustom => "Withdraw Custom List",
-                ToolbarButtonId.WithdrawWorkshop => "Withdraw Workshop List",
+                ToolbarButtonId.Settings => "設定",
+                ToolbarButtonId.Deposit => "存入",
+                ToolbarButtonId.DepositCustom => "存入自訂清單",
+                ToolbarButtonId.DepositDuplicates => "存入重複物品",
+                ToolbarButtonId.Crystals => "水晶",
+                ToolbarButtonId.Withdraw => "取出",
+                ToolbarButtonId.WithdrawCustom => "取出自訂清單",
+                ToolbarButtonId.WithdrawWorkshop => "取出工房清單",
                 _ => id.ToString()
             };
         }

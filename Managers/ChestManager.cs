@@ -43,11 +43,20 @@ namespace FCCH.Managers
             values[1].Type = FFXIVClientStructs.FFXIV.Component.GUI.ValueType.Int;
             values[1].Int = targetIndex;
 
+            bool dbg = Plugin.Configuration.DebugMode;
+            if (dbg) FCCH.Common.FCCHLog.Info($"[SwitchToPage] page={targetPage} idx={targetIndex} -> FireCallback(id={Constants.FC_CHEST_CALLBACK_ID})");
             addon->FireCallback((uint)Constants.FC_CHEST_CALLBACK_ID, values);
+            if (dbg) FCCH.Common.FCCHLog.Info($"[SwitchToPage] FireCallback returned for {targetPage}");
 
-            if (targetPage != InventoryType.FreeCompanyGil)
+            // NOTE (TC): ExecuteCommand(404) is the global-client "request FC chest page" call and
+            // is what crashed the TC client (native AV in the command-id table lookup, same call the
+            // OpLockManager hook made). Gated off via UseExecuteCommandOnPageSwitch on the TC build;
+            // FireCallback(id=2) above already drives the page switch/load on TC.
+            if (FCCH.Common.BuildFlags.UseExecuteCommandOnPageSwitch && targetPage != InventoryType.FreeCompanyGil)
             {
+                if (dbg) FCCH.Common.FCCHLog.Info($"[SwitchToPage] ExecuteCommand(404, {(int)targetPage})...");
                 Common.GameFunctions.ExecuteCommand(404, (int)targetPage);
+                if (dbg) FCCH.Common.FCCHLog.Info($"[SwitchToPage] ExecuteCommand returned for {targetPage}");
             }
         }
 

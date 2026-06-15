@@ -35,6 +35,13 @@ namespace FCCH.Managers
         public InventoryScanner(Configuration configuration)
         {
             _configuration = configuration;
+
+            if (!FCCH.Common.BuildFlags.EnableNativeHooks)
+            {
+                FCCH.Common.FCCHLog.Info("[InventoryScanner] Native hooks disabled for this build (EnableNativeHooks=false); FC bitset setter hook not installed. FC-page load state falls back to container->IsLoaded.");
+                return;
+            }
+
             Plugin.GameInteropProvider.InitializeFromAttributes(this);
 
             if (_fcBitsetHook != null)

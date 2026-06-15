@@ -25,14 +25,14 @@ namespace FCCH.Managers.Gil
         {
             if (!GilValidator.IsChestOpen())
             {
-                ChatHelper.Error("Company Chest must be open to deposit Gil.");
+                ChatHelper.Error("必須先打開部隊寶物庫才能存入金幣。");
                 return;
             }
 
             var access = _chestManager.GetChestAccess(InventoryType.FreeCompanyGil);
             if (access != Constants.FCPermissions.FULL_ACCESS && access != Constants.FCPermissions.DEPOSIT_ONLY)
             {
-                ChatHelper.Info("Skipping gd for gil.");
+                ChatHelper.Info("略過金幣的 gd。");
                 return;
             }
 
@@ -46,7 +46,7 @@ namespace FCCH.Managers.Gil
             var finalAmount = validationResult.AdjustedAmount;
             if (finalAmount == 0)
             {
-                ChatHelper.Info("No Gil to deposit after applying constraints.");
+                ChatHelper.Info("套用限制後沒有可存入的金幣。");
                 return;
             }
 
@@ -65,7 +65,7 @@ namespace FCCH.Managers.Gil
             else
             {
                 SwitchToGilTab();
-                ChatHelper.Verbose($"Queued deposit of {finalAmount:N0} Gil.");
+                ChatHelper.Verbose($"已排入存入 {finalAmount:N0} 金幣。");
             }
         }
 
@@ -73,13 +73,13 @@ namespace FCCH.Managers.Gil
         {
             if (!GilValidator.IsChestOpen())
             {
-                ChatHelper.Error("Company Chest must be open to withdraw Gil.");
+                ChatHelper.Error("必須先打開部隊寶物庫才能取出金幣。");
                 return;
             }
 
             if (_chestManager.GetChestAccess(InventoryType.FreeCompanyGil) != Constants.FCPermissions.FULL_ACCESS)
             {
-                ChatHelper.Info("Skipping gw for gil.");
+                ChatHelper.Info("略過金幣的 gw。");
                 return;
             }
 
@@ -93,7 +93,7 @@ namespace FCCH.Managers.Gil
             var finalAmount = validationResult.AdjustedAmount;
             if (finalAmount == 0)
             {
-                ChatHelper.Info("No Gil to withdraw after applying constraints.");
+                ChatHelper.Info("套用限制後沒有可取出的金幣。");
                 return;
             }
 
@@ -116,7 +116,7 @@ namespace FCCH.Managers.Gil
             };
             
             _moveManager.Enqueue(moveOp);
-            ChatHelper.Verbose($"Queued withdrawal of {finalAmount:N0} Gil.");
+            ChatHelper.Verbose($"已排入取出 {finalAmount:N0} 金幣。");
         }
 
         public void AutoDeposit()

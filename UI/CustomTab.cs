@@ -46,13 +46,13 @@ namespace FCCH.UI
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.TextDisabled($"Custom List ({itemCount} items, {totalQty:N0} total)");
+                ImGui.TextDisabled($"自訂清單({itemCount} 項,共 {totalQty:N0})");
 
                 ImGui.TableNextColumn();
                 if (itemCount > 0)
                 {
                     ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-                    if (ImGui.Button("Clear List", new Vector2(-1, 0)))
+                    if (ImGui.Button("清空清單", new Vector2(-1, 0)))
                     {
                         _configuration.WithdrawItems.Clear();
                         _configuration.Save();
@@ -67,7 +67,7 @@ namespace FCCH.UI
             if (_configuration.WithdrawItems.Count == 0)
             {
                 ImGui.BeginChild("CustomItemsList", new Vector2(0, -footerHeight), true);
-                ImGui.TextDisabled("No items in custom list. Use search below to add items.");
+                ImGui.TextDisabled("自訂清單沒有物品。用下方搜尋加入物品。");
                 ImGui.EndChild();
             }
             else
@@ -78,11 +78,11 @@ namespace FCCH.UI
                     {
                         float numericColumnWidth = ImGui.CalcTextSize(NumericColumnSample).X + ImGui.GetStyle().FramePadding.X * 2;
 
-                        ImGui.TableSetupColumn("Item", ImGuiTableColumnFlags.WidthStretch);
-                        ImGui.TableSetupColumn("Qty", ImGuiTableColumnFlags.WidthFixed, numericColumnWidth);
-                        ImGui.TableSetupColumn("Have", ImGuiTableColumnFlags.WidthFixed, numericColumnWidth);
-                        ImGui.TableSetupColumn("Mode", ImGuiTableColumnFlags.WidthFixed, CellActionButton.ColumnWidth);
-                        ImGui.TableSetupColumn("Max", ImGuiTableColumnFlags.WidthFixed, CellActionButton.ColumnWidth);
+                        ImGui.TableSetupColumn("物品", ImGuiTableColumnFlags.WidthStretch);
+                        ImGui.TableSetupColumn("數量", ImGuiTableColumnFlags.WidthFixed, numericColumnWidth);
+                        ImGui.TableSetupColumn("持有", ImGuiTableColumnFlags.WidthFixed, numericColumnWidth);
+                        ImGui.TableSetupColumn("模式", ImGuiTableColumnFlags.WidthFixed, CellActionButton.ColumnWidth);
+                        ImGui.TableSetupColumn("最大", ImGuiTableColumnFlags.WidthFixed, CellActionButton.ColumnWidth);
                         ImGui.TableSetupColumn("##del", ImGuiTableColumnFlags.WidthFixed, CellActionButton.ColumnWidth);
                         ImGui.TableHeadersRow();
 
@@ -114,7 +114,7 @@ namespace FCCH.UI
             ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, new Vector4(0.2f, 0.2f, 0.2f, 1f));
 
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-            if (ImGui.BeginCombo("##addItemSearch", "Search and add items...", ImGuiComboFlags.HeightLarge))
+            if (ImGui.BeginCombo("##addItemSearch", "搜尋並加入物品...", ImGuiComboFlags.HeightLarge))
             {
                 ImGui.PopStyleColor(2);
                 ImGui.SetNextItemWidth(-1);
@@ -144,7 +144,7 @@ namespace FCCH.UI
                     }
                     else
                     {
-                        ImGui.TextDisabled("No results found");
+                        ImGui.TextDisabled("找不到結果");
                     }
                 }
                 ImGui.EndCombo();
@@ -211,7 +211,7 @@ namespace FCCH.UI
             if (item.AlwaysMax)
             {
                 ImGui.AlignTextToFramePadding();
-                ImGui.TextDisabled("Max");
+                ImGui.TextDisabled("最大");
                 return;
             }
 
@@ -238,7 +238,7 @@ namespace FCCH.UI
             var tooltip = item.Mode switch
             {
                 CustomItemMode.Deposit => inventoryHave.ToString(),
-                CustomItemMode.Both => $"Chest: {chestHave}\nInventory: {inventoryHave}",
+                CustomItemMode.Both => $"寶物庫：{chestHave}\n背包：{inventoryHave}",
                 _ => chestHave.ToString()
             };
 
@@ -257,7 +257,7 @@ namespace FCCH.UI
 
         private void DrawModeButton(WithdrawItem item)
         {
-            CellActionButton.DrawIcon(GetModeIcon(item.Mode), "mode", $"{GetModeLabel(item.Mode)}\nClick to cycle mode", () =>
+            CellActionButton.DrawIcon(GetModeIcon(item.Mode), "mode", $"{GetModeLabel(item.Mode)}\n點擊切換模式", () =>
             {
                 item.CycleMode();
                 _configuration.Save();
@@ -266,7 +266,7 @@ namespace FCCH.UI
 
         private void DrawMaxToggle(WithdrawItem item, int index)
         {
-            CellActionButton.DrawText("M", $"max{index}", "Always use max available", () =>
+            CellActionButton.DrawText("M", $"max{index}", "永遠使用最大可用量", () =>
             {
                 item.AlwaysMax = !item.AlwaysMax;
                 _configuration.Save();
@@ -275,7 +275,7 @@ namespace FCCH.UI
 
         private void DrawDeleteButton(int index)
         {
-            CellActionButton.DrawIcon(FontAwesomeIcon.Minus, "delete", "Remove", () =>
+            CellActionButton.DrawIcon(FontAwesomeIcon.Minus, "delete", "移除", () =>
             {
                 _configuration.WithdrawItems.RemoveAt(index);
                 _configuration.Save();
@@ -298,9 +298,9 @@ namespace FCCH.UI
         {
             return mode switch
             {
-                CustomItemMode.Deposit => "Deposit",
-                CustomItemMode.Both => "Both",
-                _ => "Withdraw"
+                CustomItemMode.Deposit => "存入",
+                CustomItemMode.Both => "兩者",
+                _ => "取出"
             };
         }
 
@@ -346,7 +346,7 @@ namespace FCCH.UI
             float avail = ImGui.GetContentRegionAvail().X;
             ImGui.SetNextItemWidth(avail * 0.45f);
 
-            if (ImGui.BeginCombo("##customPresetSel", string.IsNullOrEmpty(_selectedPresetName) ? "Load Preset..." : _selectedPresetName))
+            if (ImGui.BeginCombo("##customPresetSel", string.IsNullOrEmpty(_selectedPresetName) ? "載入預設集..." : _selectedPresetName))
             {
                 foreach (var presetName in _configuration.SinglePresets.Keys)
                 {
@@ -369,7 +369,7 @@ namespace FCCH.UI
             }
             ImGui.PopFont();
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Save Current List as Preset");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("將目前清單儲存為預設集");
 
             ImGui.SameLine(0, 5);
 
@@ -386,44 +386,44 @@ namespace FCCH.UI
             }
             ImGui.PopFont();
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Delete Preset");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("刪除預設集");
 
             ImGui.SameLine(0, 15);
 
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-            if (ImGui.Button("Export"))
+            if (ImGui.Button("匯出"))
             {
                 if (Common.ExportHelper.Export(Common.ExportHelper.HEADER_SINGLES, _configuration.WithdrawItems))
                 {
-                    Common.ChatHelper.Info("Custom list exported to clipboard.");
+                    Common.ChatHelper.Info("自訂清單已匯出到剪貼簿。");
                 }
                 else
                 {
-                    Common.ChatHelper.Warning("Failed to export custom list.");
+                    Common.ChatHelper.Warning("匯出自訂清單失敗。");
                 }
             }
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Export to clipboard");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("匯出到剪貼簿");
 
             ImGui.SameLine(0, 5);
 
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-            if (ImGui.Button("Import"))
+            if (ImGui.Button("匯入"))
             {
                 var (result, data) = Common.ExportHelper.Import<List<WithdrawItem>>(Common.ExportHelper.HEADER_SINGLES);
                 if (result == Common.ExportHelper.ImportResult.Success && data != null)
                 {
                     _configuration.WithdrawItems = data;
                     _configuration.Save();
-                    Common.ChatHelper.Info($"Imported {data.Count} items to Custom list.");
+                    Common.ChatHelper.Info($"已匯入 {data.Count} 個物品到自訂清單。");
                 }
                 else
                 {
-                    Common.ChatHelper.Warning(Common.ExportHelper.GetErrorMessage(result, "Custom"));
+                    Common.ChatHelper.Warning(Common.ExportHelper.GetErrorMessage(result, "自訂清單"));
                 }
             }
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Import from clipboard");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("從剪貼簿匯入");
         }
 
         private void LoadPreset(string name)
@@ -438,16 +438,16 @@ namespace FCCH.UI
 
         private void DrawSavePresetModal()
         {
-            if (_showSavePresetModal) ImGui.OpenPopup("Save Custom Preset");
+            if (_showSavePresetModal) ImGui.OpenPopup("儲存自訂預設集");
 
-            if (ImGui.BeginPopupModal("Save Custom Preset", ref _showSavePresetModal, ImGuiWindowFlags.AlwaysAutoResize))
+            if (ImGui.BeginPopupModal("儲存自訂預設集", ref _showSavePresetModal, ImGuiWindowFlags.AlwaysAutoResize))
             {
-                ImGui.Text("Enter Preset Name:");
+                ImGui.Text("輸入預設集名稱：");
                 ImGui.InputText("##presetName", ref _presetNameInput, 64);
 
                 ImGui.Spacing();
 
-                if (ImGui.Button("Save", new Vector2(120, 0)))
+                if (ImGui.Button("儲存", new Vector2(120, 0)))
                 {
                     if (!string.IsNullOrWhiteSpace(_presetNameInput))
                     {
@@ -460,7 +460,7 @@ namespace FCCH.UI
                     }
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Cancel", new Vector2(120, 0)))
+                if (ImGui.Button("取消", new Vector2(120, 0)))
                 {
                     _showSavePresetModal = false;
                     ImGui.CloseCurrentPopup();

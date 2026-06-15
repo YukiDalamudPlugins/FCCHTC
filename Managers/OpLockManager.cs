@@ -18,6 +18,11 @@ namespace FCCH.Managers
         public OpLockManager(Configuration configuration)
         {
             _configuration = configuration;
+            if (!FCCH.Common.BuildFlags.EnableNativeHooks)
+            {
+                FCCH.Common.FCCHLog.Info("[OpLockManager] Native hooks disabled for this build (EnableNativeHooks=false); SendInventoryRefresh hook not installed.");
+                return;
+            }
             Plugin.GameInteropProvider.InitializeFromAttributes(this);
             _sendInventoryRefreshHook?.Enable();
             FCCH.Common.FCCHLog.Info("[OpLockManager] Initialized and hook enabled.");

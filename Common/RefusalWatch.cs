@@ -37,6 +37,12 @@ namespace FCCH.Common
 
         public RefusalWatch()
         {
+            if (!FCCH.Common.BuildFlags.EnableNativeHooks)
+            {
+                FCCH.Common.FCCHLog.Info("[RefusalWatch] Native hooks disabled for this build (EnableNativeHooks=false); ShowLogMessage hooks not installed.");
+                return;
+            }
+
             try
             {
                 DiscoverRefusalLogIds();

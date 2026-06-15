@@ -50,7 +50,7 @@ namespace FCCH.Managers
             var access = _chestManager.GetChestAccess(InventoryType.FreeCompanyCrystals);
             if (access != Constants.FCPermissions.FULL_ACCESS && access != Constants.FCPermissions.DEPOSIT_ONLY)
             {
-                ChatHelper.Info($"Skipping {(force ? "dc" : "da")} for crystals.");
+                ChatHelper.Info($"略過水晶的 {(force ? "dc" : "da")}。");
                 return;
             }
             InvalidateCache();
@@ -82,7 +82,7 @@ namespace FCCH.Managers
             if (!force && !_configuration.CrystalConfig.IncludeInWithdrawAll) return;
             if (_chestManager.GetChestAccess(InventoryType.FreeCompanyCrystals) != Constants.FCPermissions.FULL_ACCESS)
             {
-                ChatHelper.Info($"Skipping {(force ? "wc" : "wa")} for crystals.");
+                ChatHelper.Info($"略過水晶的 {(force ? "wc" : "wa")}。");
                 return;
             }
             InvalidateCache();

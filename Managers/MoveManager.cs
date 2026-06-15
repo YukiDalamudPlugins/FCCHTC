@@ -266,7 +266,7 @@ namespace FCCH.Managers
         private void BlockTabAndPrune(InventoryType tab)
         {
             if (!_blockedTabs.Add(tab)) return;
-            ChatHelper.Warning($"Stopped using {TabLabel(tab)} after {RefusalThreshold} consecutive refusals (likely permission, full, or stack limit).");
+            ChatHelper.Warning($"連續被拒 {RefusalThreshold} 次後停止使用 {TabLabel(tab)}(可能是權限、已滿或堆疊上限)。");
 
             int dropped = 0;
             var kept = new Queue<MoveOperation>();

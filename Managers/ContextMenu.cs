@@ -114,7 +114,7 @@ namespace FCCH.Managers
 
             SortCustomList();
             configuration.Save();
-            ChatHelper.Info($"Added {item.Name} to Custom list.");
+            ChatHelper.Info($"已將 {item.Name} 加入自訂清單。");
         }
 
         private void AddToIgnoreList(Item item)
@@ -132,7 +132,7 @@ namespace FCCH.Managers
 
             SortIgnoreList();
             configuration.Save();
-            ChatHelper.Info($"Added {item.Name} to Ignore list.");
+            ChatHelper.Info($"已將 {item.Name} 加入忽略清單。");
         }
 
         private void RemoveFromCustomList(Item item)
@@ -142,7 +142,7 @@ namespace FCCH.Managers
                 return;
 
             configuration.Save();
-            ChatHelper.Info($"Removed {item.Name} from Custom list.");
+            ChatHelper.Info($"已將 {item.Name} 從自訂清單移除。");
         }
 
         private void RemoveFromIgnoreList(Item item)
@@ -152,7 +152,7 @@ namespace FCCH.Managers
                 return;
 
             configuration.Save();
-            ChatHelper.Info($"Removed {item.Name} from Ignore list.");
+            ChatHelper.Info($"已將 {item.Name} 從忽略清單移除。");
         }
 
         private void SortCustomList()

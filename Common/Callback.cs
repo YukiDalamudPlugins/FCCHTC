@@ -16,14 +16,28 @@ namespace FCCH.Common
         public delegate byte AtkUnitBase_FireCallbackDelegate(AtkUnitBase* Base, int valueCount, AtkValue* values, byte updateState);
         internal static AtkUnitBase_FireCallbackDelegate? FireCallback = null;
 
+        // Set once we've tried (and possibly failed) the sig-scan, so we don't re-scan and
+        // spam the log on every Fire when the signature doesn't match this client (e.g. TC).
+        private static bool _sigAttempted = false;
+
         public static void Initialize()
         {
-            if (FireCallback != null) return;
+            if (FireCallback != null || _sigAttempted) return;
+            _sigAttempted = true;
             try
             {
-                var ptr = Plugin.SigScanner.ScanText(Sig);
-                FireCallback = Marshal.GetDelegateForFunctionPointer<AtkUnitBase_FireCallbackDelegate>(ptr);
-                FCCH.Common.FCCHLog.Info($"Initialized Callback module, FireCallback = 0x{ptr:X16}");
+                if (Plugin.SigScanner.TryScanText(Sig, out var ptr))
+                {
+                    FireCallback = Marshal.GetDelegateForFunctionPointer<AtkUnitBase_FireCallbackDelegate>(ptr);
+                    FCCH.Common.FCCHLog.Info($"Initialized Callback module, FireCallback = 0x{ptr:X16}");
+                }
+                else
+                {
+                    // On divergent clients (TC/USERJOY) our hardcoded signature can miss. That's
+                    // not fatal: FireRaw falls back to the FFXIVClientStructs member function if
+                    // CS itself resolved it on this client.
+                    FCCH.Common.FCCHLog.Warning("[Callback] FireCallback signature not found on this client; will use the FFXIVClientStructs fallback if CS resolved it.");
+                }
             }
             catch (Exception ex)
             {
@@ -33,9 +47,24 @@ namespace FCCH.Common
 
         public static void FireRaw(AtkUnitBase* Base, int valueCount, AtkValue* values, byte updateState = 0)
         {
+            if (Base == null) return;
+
+            // Primary: our own sig-scanned function (resolves on global / main-branch clients).
             if (FireCallback == null) Initialize();
-            if (FireCallback == null) return;
-            FireCallback(Base, valueCount, values, updateState);
+            if (FireCallback != null)
+            {
+                FireCallback(Base, valueCount, values, updateState);
+                return;
+            }
+
+            // Fallback for clients where our signature misses (TC): use the FFXIVClientStructs
+            // member function — but ONLY if CS actually resolved its address on this client.
+            // If CS didn't resolve it either, Addresses.FireCallback.Value is 0; calling the
+            // member function would dereference a null pointer and crash the game, so we no-op.
+            if (AtkUnitBase.Addresses.FireCallback.Value != IntPtr.Zero)
+            {
+                Base->FireCallback((uint)valueCount, values, updateState != 0);
+            }
         }
 
         public static void Fire(AtkUnitBase* Base, bool updateState, params object[] values)

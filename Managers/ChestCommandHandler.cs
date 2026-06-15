@@ -51,8 +51,8 @@ namespace FCCH.Managers
                 _moveManager.Enqueue(move);
             }
 
-            if (moves.Count > 0) ChatHelper.Info($"Queued {moves.Count} items for deposit.");
-            else ChatHelper.Info("No items to deposit.");
+            if (moves.Count > 0) ChatHelper.Info($"已排入 {moves.Count} 個物品準備存入。");
+            else ChatHelper.Info("沒有可存入的物品。");
         }
 
         public void WithdrawAll()
@@ -92,8 +92,8 @@ namespace FCCH.Managers
                 _moveManager.Enqueue(move);
             }
 
-            if (moves.Count > 0) ChatHelper.Info($"Queued {moves.Count} items for withdrawal.");
-            else ChatHelper.Info("No items to withdraw.");
+            if (moves.Count > 0) ChatHelper.Info($"已排入 {moves.Count} 個物品準備取出。");
+            else ChatHelper.Info("沒有可取出的物品。");
         }
 
         private void ReportSkippedTabs(string command, Func<byte, bool> allowed)
@@ -104,7 +104,7 @@ namespace FCCH.Managers
                 .ToList();
 
             if (skipped.Count > 0)
-                ChatHelper.Info($"Skipping {command} for tabs: {FormatTabs(skipped)}");
+                ChatHelper.Info($"權限不足,略過 {command} 的分頁：{FormatTabs(skipped)}");
         }
 
         private static bool CanDeposit(byte access)
@@ -121,19 +121,19 @@ namespace FCCH.Managers
 
         public void DepositToTab(int tab)
         {
-            if (tab < 1 || tab > 5) { ChatHelper.Warning("Tab must be 1-5."); return; }
+            if (tab < 1 || tab > 5) { ChatHelper.Warning("分頁必須是 1-5。"); return; }
 
             var target = (InventoryType)((int)InventoryType.FreeCompanyPage1 + (tab - 1));
             if (!_chestManager.GetAvailableTabs().Contains(target))
             {
-                ChatHelper.Warning($"Tab {tab} not unlocked yet.");
+                ChatHelper.Warning($"分頁 {tab} 尚未解鎖。");
                 return;
             }
 
             var depAccess = _chestManager.GetChestAccess(target);
             if (depAccess != Constants.FCPermissions.FULL_ACCESS && depAccess != Constants.FCPermissions.DEPOSIT_ONLY)
             {
-                ChatHelper.Warning($"Tab {tab}: no deposit permission.");
+                ChatHelper.Warning($"分頁 {tab}：沒有存入權限。");
                 return;
             }
 
@@ -148,10 +148,10 @@ namespace FCCH.Managers
             }
 
             if (OperationManager.LastDepositOverflow.Count > 0)
-                ChatHelper.Warning($"{OperationManager.LastDepositOverflow.Count} item(s) skipped - Tab {tab} full.");
+                ChatHelper.Warning($"{OperationManager.LastDepositOverflow.Count} 個物品略過 - 分頁 {tab} 已滿。");
 
-            if (moves.Count > 0) ChatHelper.Info($"Queued {moves.Count} items for deposit to Tab {tab}.");
-            else ChatHelper.Info($"No items to deposit to Tab {tab}.");
+            if (moves.Count > 0) ChatHelper.Info($"已排入 {moves.Count} 個物品準備存入分頁 {tab}。");
+            else ChatHelper.Info($"沒有可存入分頁 {tab} 的物品。");
         }
 
         public void DepositDuplicates()
@@ -168,24 +168,24 @@ namespace FCCH.Managers
                 _moveManager.Enqueue(move);
             }
 
-            if (moves.Count > 0) ChatHelper.Info($"Queued {moves.Count} duplicates for deposit.");
-            else ChatHelper.Info("No duplicates to deposit.");
+            if (moves.Count > 0) ChatHelper.Info($"已排入 {moves.Count} 個重複物品準備存入。");
+            else ChatHelper.Info("沒有可存入的重複物品。");
         }
 
         public void WithdrawFromTab(int tab)
         {
-            if (tab < 1 || tab > 5) { ChatHelper.Warning("Tab must be 1-5."); return; }
+            if (tab < 1 || tab > 5) { ChatHelper.Warning("分頁必須是 1-5。"); return; }
 
             var target = (InventoryType)((int)InventoryType.FreeCompanyPage1 + (tab - 1));
             if (!_chestManager.GetAvailableTabs().Contains(target))
             {
-                ChatHelper.Warning($"Tab {tab} not unlocked yet.");
+                ChatHelper.Warning($"分頁 {tab} 尚未解鎖。");
                 return;
             }
 
             if (_chestManager.GetChestAccess(target) != Constants.FCPermissions.FULL_ACCESS)
             {
-                ChatHelper.Warning($"Tab {tab}: no withdraw permission.");
+                ChatHelper.Warning($"分頁 {tab}：沒有取出權限。");
                 return;
             }
 
@@ -213,8 +213,8 @@ namespace FCCH.Managers
                 _moveManager.Enqueue(move);
             }
 
-            if (moves.Count > 0) ChatHelper.Info($"Queued {moves.Count} items for withdrawal from Tab {tab}.");
-            else ChatHelper.Info($"No items to withdraw from Tab {tab}.");
+            if (moves.Count > 0) ChatHelper.Info($"已排入 {moves.Count} 個物品準備從分頁 {tab} 取出。");
+            else ChatHelper.Info($"沒有可從分頁 {tab} 取出的物品。");
         }
 
         public void WithdrawMaterials(Dictionary<uint, int> items)
@@ -229,8 +229,8 @@ namespace FCCH.Managers
                 _moveManager.Enqueue(move);
             }
 
-            if (moves.Count > 0) ChatHelper.Info($"Queued {moves.Count} items for workshop withdrawal.");
-            else ChatHelper.Info("No materials found to withdraw.");
+            if (moves.Count > 0) ChatHelper.Info($"已排入 {moves.Count} 個物品準備供工房取出。");
+            else ChatHelper.Info("找不到可取出的材料。");
         }
 
         public void DepositMaterials(Dictionary<uint, int> items)
@@ -240,7 +240,7 @@ namespace FCCH.Managers
 
             if (items.Count == 0)
             {
-                ChatHelper.Info("Deposit request is empty.");
+                ChatHelper.Info("存入請求是空的。");
                 return;
             }
 
@@ -251,8 +251,8 @@ namespace FCCH.Managers
                 _moveManager.Enqueue(move);
             }
 
-            if (moves.Count > 0) ChatHelper.Info($"Queued {moves.Count} requested items for deposit.");
-            else ChatHelper.Info("No requested items to deposit.");
+            if (moves.Count > 0) ChatHelper.Info($"已排入 {moves.Count} 個指定物品準備存入。");
+            else ChatHelper.Info("沒有可存入的指定物品。");
         }
 
         public void DepositCustomItems()
@@ -263,7 +263,7 @@ namespace FCCH.Managers
             var items = BuildCustomItemAmounts(x => x.CanDeposit, true);
             if (items.Count == 0)
             {
-                ChatHelper.Info("Custom deposit list is empty.");
+                ChatHelper.Info("自訂存入清單是空的。");
                 return;
             }
 
@@ -274,8 +274,8 @@ namespace FCCH.Managers
                 _moveManager.Enqueue(move);
             }
 
-            if (moves.Count > 0) ChatHelper.Info($"Queued {moves.Count} custom items for deposit.");
-            else ChatHelper.Info("No custom items to deposit.");
+            if (moves.Count > 0) ChatHelper.Info($"已排入 {moves.Count} 個自訂物品準備存入。");
+            else ChatHelper.Info("沒有可存入的自訂物品。");
         }
 
         public void WithdrawCustomItems()
@@ -286,7 +286,7 @@ namespace FCCH.Managers
             var items = BuildCustomItemAmounts(x => x.CanWithdraw, false);
             if (items.Count == 0)
             {
-                ChatHelper.Info("Custom withdrawal list is empty.");
+                ChatHelper.Info("自訂取出清單是空的。");
                 return;
             }
 
@@ -297,8 +297,8 @@ namespace FCCH.Managers
                 _moveManager.Enqueue(move);
             }
 
-            if (moves.Count > 0) ChatHelper.Info($"Queued {moves.Count} custom items for withdrawal.");
-            else ChatHelper.Info("No custom items to withdraw.");
+            if (moves.Count > 0) ChatHelper.Info($"已排入 {moves.Count} 個自訂物品準備取出。");
+            else ChatHelper.Info("沒有可取出的自訂物品。");
         }
 
         private Dictionary<uint, int> BuildCustomItemAmounts(Func<WithdrawItem, bool> include, bool deposit)
@@ -362,7 +362,7 @@ namespace FCCH.Managers
         {
             _moveManager.Clear();
             _indexer.Stop();
-            ChatHelper.Info("Stopped.");
+            ChatHelper.Info("已停止。");
         }
 
         public void SwitchToTab(InventoryType type)

@@ -179,8 +179,8 @@ namespace FCCH.UI
                 first = false;
             }
 
-            DrawConfirmationModal("Confirm Deposit", _confirmMessage, ref _showDepositConfirm, true);
-            DrawConfirmationModal("Confirm Withdraw", _confirmMessage, ref _showWithdrawConfirm, false);
+            DrawConfirmationModal("確認存入", _confirmMessage, ref _showDepositConfirm, true);
+            DrawConfirmationModal("確認取出", _confirmMessage, ref _showWithdrawConfirm, false);
 
             LastHeight = ImGui.GetWindowSize().Y;
         }
@@ -193,23 +193,23 @@ namespace FCCH.UI
             switch (id)
             {
                 case ToolbarButtonId.Settings:
-                    DrawIconButton(FontAwesomeIcon.Cog, "Settings", "Settings",
+                    DrawIconButton(FontAwesomeIcon.Cog, "Settings", "設定",
                         onClick: () => _helper.IsSettingsVisible = !_helper.IsSettingsVisible);
                     break;
                 case ToolbarButtonId.Deposit:
                     DrawSplitButtonWithDropdown(
                         FontAwesomeIcon.ArrowDown, "DepMenu",
-                        ActionTooltip("Deposit\nClick for tab options", gate),
+                        ActionTooltip("存入\n點擊顯示分頁選項", gate),
                         ref _depositMenuOpen, ref _depositMenuAnchor, DepositPopupId,
                         () => DrawDepositMenuItems(gate));
                     break;
                 case ToolbarButtonId.DepositCustom:
-                    DrawIconButton(FontAwesomeIcon.FileAlt, "DepCustom", ActionTooltip("Deposit Custom List", gate),
-                        onClick: () => RequestDeposit("Deposit Custom list?", () => _helper.DepositCustomItems()));
+                    DrawIconButton(FontAwesomeIcon.FileAlt, "DepCustom", ActionTooltip("存入自訂清單", gate),
+                        onClick: () => RequestDeposit("要存入自訂清單嗎?", () => _helper.DepositCustomItems()));
                     break;
                 case ToolbarButtonId.DepositDuplicates:
-                    DrawIconButton(FontAwesomeIcon.Clone, "Dupes", ActionTooltip("Deposit Duplicates", gate),
-                        onClick: () => RequestDeposit("Deposit all duplicates?", () => _helper.DepositDuplicates()));
+                    DrawIconButton(FontAwesomeIcon.Clone, "Dupes", ActionTooltip("存入重複物品", gate),
+                        onClick: () => RequestDeposit("要存入所有重複物品嗎?", () => _helper.DepositDuplicates()));
                     break;
                 case ToolbarButtonId.Crystals:
                     DrawCrystalButton(gate);
@@ -217,17 +217,17 @@ namespace FCCH.UI
                 case ToolbarButtonId.Withdraw:
                     DrawSplitButtonWithDropdown(
                         FontAwesomeIcon.ArrowUp, "WithMenu",
-                        ActionTooltip("Withdraw\nClick for tab options", gate),
+                        ActionTooltip("取出\n點擊顯示分頁選項", gate),
                         ref _withdrawMenuOpen, ref _withdrawMenuAnchor, WithdrawPopupId,
                         () => DrawWithdrawMenuItems(gate));
                     break;
                 case ToolbarButtonId.WithdrawCustom:
-                    DrawIconButton(FontAwesomeIcon.FileAlt, "Custom", ActionTooltip("Withdraw Custom List", gate),
-                        onClick: () => RequestWithdraw("Withdraw Custom list?", () => _helper.WithdrawCustomItems()));
+                    DrawIconButton(FontAwesomeIcon.FileAlt, "Custom", ActionTooltip("取出自訂清單", gate),
+                        onClick: () => RequestWithdraw("要取出自訂清單嗎?", () => _helper.WithdrawCustomItems()));
                     break;
                 case ToolbarButtonId.WithdrawWorkshop:
-                    DrawIconButton(FontAwesomeIcon.ListUl, "Workshop", ActionTooltip("Withdraw Workshop List", gate),
-                        onClick: () => RequestWithdraw("Withdraw Workshop List?", () => _helper.WithdrawWorkshopItems()));
+                    DrawIconButton(FontAwesomeIcon.ListUl, "Workshop", ActionTooltip("取出工房清單", gate),
+                        onClick: () => RequestWithdraw("要取出工房清單嗎?", () => _helper.WithdrawWorkshopItems()));
                     break;
             }
 
@@ -298,7 +298,7 @@ namespace FCCH.UI
             ImGui.PopStyleColor(2);
             ImGui.PopFont();
 
-            if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(ActionTooltip("Crystals\nLeft Click: Deposit\nRight Click: Withdraw", gate));
+            if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(ActionTooltip("水晶\n左鍵:存入\n右鍵:取出", gate));
         }
 
         private void DrawSplitButtonWithDropdown(
@@ -351,16 +351,16 @@ namespace FCCH.UI
         {
             if (!gate.CanRun) ImGui.BeginDisabled();
 
-            if (ImGui.Selectable("Deposit All", false, ImGuiSelectableFlags.None, SubmenuItemSize))
-                RequestDeposit("Deposit ALL allowed items?", () => _helper.DepositAll());
+            if (ImGui.Selectable("存入全部", false, ImGuiSelectableFlags.None, SubmenuItemSize))
+                RequestDeposit("要存入所有允許的物品嗎?", () => _helper.DepositAll());
 
             ImGui.Separator();
 
             for (int t = 1; t <= 5; t++)
             {
                 int tab = t;
-                if (ImGui.Selectable($"Deposit Tab {tab}", false, ImGuiSelectableFlags.None, SubmenuItemSize))
-                    RequestDeposit($"Deposit eligible items to Tab {tab}?", () => _helper.DepositToTab(tab));
+                if (ImGui.Selectable($"存入分頁 {tab}", false, ImGuiSelectableFlags.None, SubmenuItemSize))
+                    RequestDeposit($"要將符合的物品存入分頁 {tab} 嗎?", () => _helper.DepositToTab(tab));
             }
 
             if (!gate.CanRun) ImGui.EndDisabled();
@@ -370,16 +370,16 @@ namespace FCCH.UI
         {
             if (!gate.CanRun) ImGui.BeginDisabled();
 
-            if (ImGui.Selectable("Withdraw All", false, ImGuiSelectableFlags.None, SubmenuItemSize))
-                RequestWithdraw("Withdraw ALL items?", () => _helper.WithdrawAll());
+            if (ImGui.Selectable("取出全部", false, ImGuiSelectableFlags.None, SubmenuItemSize))
+                RequestWithdraw("要取出所有物品嗎?", () => _helper.WithdrawAll());
 
             ImGui.Separator();
 
             for (int t = 1; t <= 5; t++)
             {
                 int tab = t;
-                if (ImGui.Selectable($"Withdraw Tab {tab}", false, ImGuiSelectableFlags.None, SubmenuItemSize))
-                    RequestWithdraw($"Withdraw all items from Tab {tab}?", () => _helper.WithdrawFromTab(tab));
+                if (ImGui.Selectable($"取出分頁 {tab}", false, ImGuiSelectableFlags.None, SubmenuItemSize))
+                    RequestWithdraw($"要取出分頁 {tab} 的所有物品嗎?", () => _helper.WithdrawFromTab(tab));
             }
 
             if (!gate.CanRun) ImGui.EndDisabled();
@@ -403,7 +403,7 @@ namespace FCCH.UI
             _pendingConfirmAction = action;
             _showDepositConfirm = true;
             _dontShowAgain = false;
-            ImGui.OpenPopup("Confirm Deposit");
+            ImGui.OpenPopup("確認存入");
         }
 
         private void RequestWithdraw(string message, Action action)
@@ -424,7 +424,7 @@ namespace FCCH.UI
             _pendingConfirmAction = action;
             _showWithdrawConfirm = true;
             _dontShowAgain = false;
-            ImGui.OpenPopup("Confirm Withdraw");
+            ImGui.OpenPopup("確認取出");
         }
 
         private void DrawConfirmationModal(string title, string message, ref bool showFlag, bool isDeposit)
@@ -434,8 +434,8 @@ namespace FCCH.UI
                 ImGui.Text(message);
 
                 ImGui.Separator();
-                ImGui.Checkbox("Don't show this again", ref _dontShowAgain);
-                if (ImGui.Button("Yes", new Vector2(120, 0)))
+                ImGui.Checkbox("不再顯示", ref _dontShowAgain);
+                if (ImGui.Button("是", new Vector2(120, 0)))
                 {
                     if (_dontShowAgain)
                     {
@@ -449,7 +449,7 @@ namespace FCCH.UI
                     ImGui.CloseCurrentPopup();
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("No", new Vector2(120, 0))) { showFlag = false; ImGui.CloseCurrentPopup(); }
+                if (ImGui.Button("否", new Vector2(120, 0))) { showFlag = false; ImGui.CloseCurrentPopup(); }
                 ImGui.EndPopup();
             }
         }
@@ -479,11 +479,11 @@ namespace FCCH.UI
             ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 1f);
 
             ImGui.AlignTextToFramePadding();
-            ImGui.TextColored(ImGuiColors.HealerGreen, "Processing...");
+            ImGui.TextColored(ImGuiColors.HealerGreen, "處理中...");
             ImGui.SameLine();
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGuiColors.DalamudRed);
             ImGui.PushStyleColor(ImGuiCol.ButtonActive, ImGuiColors.DalamudRed);
-            if (ImGui.Button("Stop"))
+            if (ImGui.Button("停止"))
             {
                 _helper.Stop();
             }

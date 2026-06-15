@@ -93,28 +93,28 @@ namespace FCCH.UI
                     ImGui.PushStyleColor(ImGuiCol.Button, moveBg);
                     ImGui.PushStyleColor(ImGuiCol.ButtonHovered, style.Colors[(int)ImGuiCol.TabHovered]);
                     if (status == OrgJobStatus.Running) ImGui.BeginDisabled();
-                    if (ImGui.Button("Move", new Vector2(-1, 30)))
+                    if (ImGui.Button("搬移", new Vector2(-1, 30)))
                     {
                         _selectedModeIndex = 0;
                         SyncAndInvalidate();
                     }
                     if (status == OrgJobStatus.Running) ImGui.EndDisabled();
                     ImGui.PopStyleColor(2);
-                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(status == OrgJobStatus.Running ? "Operation in progress" : "Transfer items between tabs");
+                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(status == OrgJobStatus.Running ? "操作進行中" : "在分頁之間搬移物品");
 
                     ImGui.TableNextColumn();
                     Vector4 sortBg = isSort ? style.Colors[(int)ImGuiCol.TabActive] : style.Colors[(int)ImGuiCol.FrameBg];
                     ImGui.PushStyleColor(ImGuiCol.Button, sortBg);
                     ImGui.PushStyleColor(ImGuiCol.ButtonHovered, style.Colors[(int)ImGuiCol.TabHovered]);
                     if (status == OrgJobStatus.Running) ImGui.BeginDisabled();
-                    if (ImGui.Button("Sort", new Vector2(-1, 30)))
+                    if (ImGui.Button("排序", new Vector2(-1, 30)))
                     {
                         _selectedModeIndex = 1;
                         SyncAndInvalidate();
                     }
                     if (status == OrgJobStatus.Running) ImGui.EndDisabled();
                     ImGui.PopStyleColor(2);
-                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(status == OrgJobStatus.Running ? "Operation in progress" : "Reorder items within a tab");
+                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(status == OrgJobStatus.Running ? "操作進行中" : "在分頁內重新排列物品");
 
                     ImGui.EndTable();
                 }
@@ -122,7 +122,7 @@ namespace FCCH.UI
                 ImGui.Spacing();
 
                 ImGui.SetNextItemOpen(true, ImGuiCond.Always);
-                ImGui.CollapsingHeader("Transfer Settings", ImGuiTreeNodeFlags.Leaf);
+                ImGui.CollapsingHeader("搬移設定", ImGuiTreeNodeFlags.Leaf);
                 if (ImGui.BeginTable("TransferTable", 4, ImGuiTableFlags.None))
                 {
                     ImGui.TableSetupColumn("L1", ImGuiTableColumnFlags.WidthFixed, 50);
@@ -135,7 +135,7 @@ namespace FCCH.UI
                     {
                         ImGui.TableNextColumn();
                         ImGui.AlignTextToFramePadding();
-                        ImGui.Text("Tab:");
+                        ImGui.Text("分頁：");
                         ImGui.TableNextColumn();
                         ImGui.SetNextItemWidth(-1);
                         if (ImGui.BeginCombo("##TargetTab", OrgService.GetTabDisplayName(tabs[_selectedSourceIndex])))
@@ -151,7 +151,7 @@ namespace FCCH.UI
                             }
                             ImGui.EndCombo();
                         }
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Tab to sort items in");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("要排序的分頁");
                         ImGui.TableNextColumn();
                         ImGui.TableNextColumn();
                     }
@@ -159,7 +159,7 @@ namespace FCCH.UI
                     {
                         ImGui.TableNextColumn();
                         ImGui.AlignTextToFramePadding();
-                        ImGui.Text("From:");
+                        ImGui.Text("從：");
                         ImGui.TableNextColumn();
                         ImGui.SetNextItemWidth(-1);
                         if (ImGui.BeginCombo("##FromTab", OrgService.GetTabDisplayName(tabs[_selectedSourceIndex])))
@@ -185,11 +185,11 @@ namespace FCCH.UI
                             }
                             ImGui.EndCombo();
                         }
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Source tab to take items from");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("來源分頁");
 
                         ImGui.TableNextColumn();
                         ImGui.AlignTextToFramePadding();
-                        ImGui.Text("To:");
+                        ImGui.Text("到：");
                         ImGui.TableNextColumn();
                         ImGui.SetNextItemWidth(-1);
                         if (ImGui.BeginCombo("##ToTab", OrgService.GetTabDisplayName(tabs[_selectedDestIndex])))
@@ -207,7 +207,7 @@ namespace FCCH.UI
                             }
                             ImGui.EndCombo();
                         }
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("Destination tab to place items");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip("目標分頁");
                     }
                     ImGui.EndTable();
                 }
@@ -215,7 +215,7 @@ namespace FCCH.UI
                 ImGui.Spacing();
 
                 ImGui.SetNextItemOpen(true, ImGuiCond.Always);
-                ImGui.CollapsingHeader("Filter", ImGuiTreeNodeFlags.Leaf);
+                ImGui.CollapsingHeader("篩選", ImGuiTreeNodeFlags.Leaf);
                 
                 var sortedCategories = new List<OrgFilterCategory> { OrgFilterCategory.AllItems };
                 var otherCats = filterCategories.Where(c => c != OrgFilterCategory.AllItems).OrderBy(c => GetFilterShortName(c)).ToList();
@@ -259,7 +259,7 @@ namespace FCCH.UI
                             }
                             SyncAndInvalidate();
                         }
-                        if (ImGui.IsItemHovered()) ImGui.SetTooltip($"Include {label}");
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip($"包含 {label}");
                     }
                     ImGui.EndTable();
                 }
@@ -267,13 +267,13 @@ namespace FCCH.UI
                 ImGui.Spacing();
 
                 ImGui.SetNextItemOpen(true, ImGuiCond.Always);
-                ImGui.CollapsingHeader(isSort ? "Sort Order" : "Sort Order", ImGuiTreeNodeFlags.Leaf);
+                ImGui.CollapsingHeader("排序方式", ImGuiTreeNodeFlags.Leaf);
 
                 var sortOptions = new[] {
-                    (Value: OrgSortOrder.ByCategory, Label: "Category"),
+                    (Value: OrgSortOrder.ByCategory, Label: "分類"),
                     (Value: OrgSortOrder.ById, Label: "ID"),
-                    (Value: OrgSortOrder.ByName, Label: "Name"),
-                    (Value: OrgSortOrder.ByQuantity, Label: "Qty")
+                    (Value: OrgSortOrder.ByName, Label: "名稱"),
+                    (Value: OrgSortOrder.ByQuantity, Label: "數量")
                 };
 
                 if (ImGui.BeginTable("OrderLayout", 2, ImGuiTableFlags.None))
@@ -300,14 +300,14 @@ namespace FCCH.UI
                         }
                         ImGui.EndCombo();
                     }
-                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("How to order items");
+                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("物品排序方式");
 
                     ImGui.TableNextColumn();
-                    if (ImGui.Checkbox("Reverse", ref _sortDescending))
+                    if (ImGui.Checkbox("反向", ref _sortDescending))
                     {
                         SyncAndInvalidate();
                     }
-                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("Reverse the sort order");
+                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("反轉排序順序");
 
                     ImGui.EndTable();
                 }
@@ -321,14 +321,14 @@ namespace FCCH.UI
             if (ImGui.BeginChild("PreviewPane", new Vector2(0, previewHeight), true))
             {
                 ImGui.SetNextItemOpen(true, ImGuiCond.Always);
-                ImGui.CollapsingHeader($"Preview ({previewCount} items)", ImGuiTreeNodeFlags.Leaf);
+                ImGui.CollapsingHeader($"預覽({previewCount} 項)", ImGuiTreeNodeFlags.Leaf);
 
                 if (ImGui.BeginTable("PreviewTable", 3, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY))
                 {
                     ImGui.TableSetupScrollFreeze(0, 1);
-                    ImGui.TableSetupColumn("Item Name", ImGuiTableColumnFlags.WidthStretch);
-                    ImGui.TableSetupColumn("Qty", ImGuiTableColumnFlags.WidthFixed, 50);
-                    ImGui.TableSetupColumn("Category", ImGuiTableColumnFlags.WidthFixed, 100);
+                    ImGui.TableSetupColumn("物品名稱", ImGuiTableColumnFlags.WidthStretch);
+                    ImGui.TableSetupColumn("數量", ImGuiTableColumnFlags.WidthFixed, 50);
+                    ImGui.TableSetupColumn("分類", ImGuiTableColumnFlags.WidthFixed, 100);
                     ImGui.TableHeadersRow();
 
                     if (check != null && check.PreviewItems.Count > 0)
@@ -338,7 +338,7 @@ namespace FCCH.UI
                             ImGui.TableNextRow();
                             ImGui.TableNextColumn();
                             string mergeTag = item.WillMerge ? " (M)" : "";
-                            ItemNameDisplay.Text(item.ItemId, item.ItemName, _config, mergeTag, item.WillMerge ? "Will merge with existing stack" : null);
+                            ItemNameDisplay.Text(item.ItemId, item.ItemName, _config, mergeTag, item.WillMerge ? "將與現有堆疊合併" : null);
 
                             ImGui.TableNextColumn();
                             ImGui.Text($"{item.Quantity}");
@@ -351,7 +351,7 @@ namespace FCCH.UI
                     {
                         ImGui.TableNextRow();
                         ImGui.TableNextColumn();
-                        ImGui.TextDisabled("Click 'Check' to preview...");
+                        ImGui.TextDisabled("點擊「檢查」以預覽...");
                         ImGui.TableNextColumn();
                         ImGui.TableNextColumn();
                     }
@@ -370,35 +370,35 @@ namespace FCCH.UI
                 ImGui.AlignTextToFramePadding();
                 if (status == OrgJobStatus.Running)
                 {
-                    ImGui.Text($"Status: Running ({_service.CompletedMoves}/{_service.TotalMoves})");
+                    ImGui.Text($"狀態：執行中({_service.CompletedMoves}/{_service.TotalMoves})");
                 }
                 else if (status == OrgJobStatus.Completed)
                 {
-                    ImGui.TextColored(new Vector4(0.2f, 0.8f, 0.2f, 1.0f), "Status: Completed!");
+                    ImGui.TextColored(new Vector4(0.2f, 0.8f, 0.2f, 1.0f), "狀態：已完成!");
                 }
                 else if (status == OrgJobStatus.Failed)
                 {
-                    ImGui.TextColored(new Vector4(0.8f, 0.2f, 0.2f, 1.0f), $"Status: {_service.StatusMessage}");
+                    ImGui.TextColored(new Vector4(0.8f, 0.2f, 0.2f, 1.0f), $"狀態：{_service.StatusMessage}");
                 }
                 else if (check != null && check.IsValid)
                 {
-                    ImGui.TextColored(new Vector4(0.2f, 0.8f, 0.2f, 1.0f), $"Status: Ready ({check.StackCount} items)");
+                    ImGui.TextColored(new Vector4(0.2f, 0.8f, 0.2f, 1.0f), $"狀態：就緒({check.StackCount} 項)");
                     ImGui.SameLine();
                     var pColor = check.PlayerBufferOK ? new Vector4(0.5f, 0.8f, 0.5f, 1.0f) : new Vector4(0.8f, 0.5f, 0.5f, 1.0f);
                     var dColor = check.DestCapacityOK ? new Vector4(0.5f, 0.8f, 0.5f, 1.0f) : new Vector4(0.8f, 0.5f, 0.5f, 1.0f);
-                    ImGui.TextColored(pColor, $"| Player: {check.PlayerFreeSlots}");
-                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("Free slots in player inventory");
+                    ImGui.TextColored(pColor, $"| 背包：{check.PlayerFreeSlots}");
+                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("背包可用格數");
                     ImGui.SameLine();
-                    ImGui.TextColored(dColor, $"| Dest: {check.DestFreeSlots}");
-                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("Free slots in destination");
+                    ImGui.TextColored(dColor, $"| 目標：{check.DestFreeSlots}");
+                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("目標可用格數");
                 }
                 else if (check != null)
                 {
-                    ImGui.TextColored(new Vector4(0.8f, 0.2f, 0.2f, 1.0f), $"Status: {check.StatusMessage}");
+                    ImGui.TextColored(new Vector4(0.8f, 0.2f, 0.2f, 1.0f), $"狀態：{check.StatusMessage}");
                 }
                 else
                 {
-                    ImGui.TextDisabled("Status: Not checked");
+                    ImGui.TextDisabled("狀態：尚未檢查");
                 }
 
                 ImGui.TableNextColumn();
@@ -407,7 +407,7 @@ namespace FCCH.UI
                 var gate = _helper.CanStartUserAction();
                 bool blocked = !gate.CanRun && !isRunning;
                 bool canRun = !conflict && check != null && check.IsValid;
-                string buttonLabel = isRunning ? "Cancel" : (canRun ? GetActionLabel() : "Check");
+                string buttonLabel = isRunning ? "取消" : (canRun ? GetActionLabel() : "檢查");
 
                 if (conflict || blocked) ImGui.BeginDisabled();
                 ImGui.PushStyleColor(ImGuiCol.ButtonHovered, isRunning ? new Vector4(0.8f, 0.2f, 0.2f, 1.0f) : style.Colors[(int)ImGuiCol.TabHovered]);
@@ -424,11 +424,11 @@ namespace FCCH.UI
                 if (conflict || blocked) ImGui.EndDisabled();
                 if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
                 {
-                    if (conflict) ImGui.SetTooltip("Source and Destination cannot be the same");
+                    if (conflict) ImGui.SetTooltip("來源與目標不能相同");
                     else if (blocked) ImGui.SetTooltip(gate.Reason);
-                    else if (isRunning) ImGui.SetTooltip("Cancel the current operation");
-                    else if (canRun) ImGui.SetTooltip("Execute the operation");
-                    else ImGui.SetTooltip("Check if operation is valid");
+                    else if (isRunning) ImGui.SetTooltip("取消目前的操作");
+                    else if (canRun) ImGui.SetTooltip("執行操作");
+                    else ImGui.SetTooltip("檢查操作是否有效");
                 }
 
                 ImGui.EndTable();
@@ -439,9 +439,9 @@ namespace FCCH.UI
         {
             return _selectedModeIndex switch
             {
-                0 => "Move Items",
-                1 => "Sort Items",
-                _ => "Execute"
+                0 => "搬移物品",
+                1 => "排序物品",
+                _ => "執行"
             };
         }
 
@@ -449,16 +449,16 @@ namespace FCCH.UI
         {
             return cat switch
             {
-                OrgFilterCategory.AllItems => "All Items",
-                OrgFilterCategory.Equipment => "Equipment",
-                OrgFilterCategory.MedicinesMeals => "Med/Meals",
-                OrgFilterCategory.Materials => "Materials",
-                OrgFilterCategory.Materia => "Materia",
-                OrgFilterCategory.Registrable => "Registrable",
-                OrgFilterCategory.Dye => "Dye",
-                OrgFilterCategory.Housing => "Housing",
-                OrgFilterCategory.Gardening => "Gardening",
-                OrgFilterCategory.Miscellaneous => "Misc",
+                OrgFilterCategory.AllItems => "全部物品",
+                OrgFilterCategory.Equipment => "裝備",
+                OrgFilterCategory.MedicinesMeals => "藥品/食物",
+                OrgFilterCategory.Materials => "素材",
+                OrgFilterCategory.Materia => "魔晶石",
+                OrgFilterCategory.Registrable => "可登錄",
+                OrgFilterCategory.Dye => "染劑",
+                OrgFilterCategory.Housing => "房屋",
+                OrgFilterCategory.Gardening => "園藝",
+                OrgFilterCategory.Miscellaneous => "雜項",
                 _ => cat.ToString()
             };
         }

@@ -16,7 +16,7 @@ namespace FCCH.UI
         private readonly global::FCCH.Managers.CrystalManager _manager;
         private readonly ChestHelper _helper;
 
-        private static readonly string[] ElementNames = { "Fire", "Ice", "Wind", "Earth", "Lightning", "Water" };
+        private static readonly string[] ElementNames = { "火", "冰", "風", "土", "雷", "水" };
         private static readonly string[] ElementIcons = { "\uE0C6", "\uE0C7", "\uE0C9", "\uE0C8", "\uE0CA", "\uE0CB" };
 
         private static readonly uint[][] RowIds = {
@@ -46,14 +46,14 @@ namespace FCCH.UI
                 if (ImGui.BeginChild("GlobalSettings", new Vector2(0, 70), true))
                 {
                     bool dep = config.IncludeInDepositAll;
-                    if (ImGui.Checkbox("Include in Deposits", ref dep))
+                    if (ImGui.Checkbox("納入存入全部", ref dep))
                     {
                         config.IncludeInDepositAll = dep;
                         _configuration.Save();
                     }
                     ImGui.SameLine(220);
                     bool wit = config.IncludeInWithdrawAll;
-                    if (ImGui.Checkbox("Include in Withdrawals", ref wit))
+                    if (ImGui.Checkbox("納入取出全部", ref wit))
                     {
                         config.IncludeInWithdrawAll = wit;
                         _configuration.Save();
@@ -62,7 +62,7 @@ namespace FCCH.UI
                     ImGui.Spacing();
 
                     ImGui.AlignTextToFramePadding();
-                    ImGui.Text("Global Keep Amount:");
+                    ImGui.Text("全域保留數量：");
                     ImGui.SameLine();
                     int keep = config.GlobalKeepAmount;
                     ImGui.SetNextItemWidth(170);
@@ -75,13 +75,13 @@ namespace FCCH.UI
                     ImGui.TextDisabled("(0-9999)");
                     ImGui.SameLine();
                     ImGui.PushStyleColor(ImGuiCol.ButtonHovered, style.Colors[(int)ImGuiCol.TabHovered]);
-                    if (ImGui.Button("Reset to Global"))
+                    if (ImGui.Button("重設為全域"))
                     {
                         config.CustomKeepAmounts.Clear();
                         _configuration.Save();
                     }
                     ImGui.PopStyleColor();
-                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("Reset all crystals to Global Keep Amount");
+                    if (ImGui.IsItemHovered()) ImGui.SetTooltip("將所有水晶重設為全域保留數量");
                 }
                 ImGui.EndChild();
                 ImGui.PopStyleColor();
@@ -100,16 +100,16 @@ namespace FCCH.UI
 
                     ImGui.PushStyleColor(ImGuiCol.Button, style.Colors[(int)ImGuiCol.FrameBg]);
                     ImGui.PushStyleColor(ImGuiCol.ButtonHovered, style.Colors[(int)ImGuiCol.TabHovered]);
-                    if (ImGui.Button("ALL", new Vector2(-1, 0))) ToggleAll();
+                    if (ImGui.Button("全部", new Vector2(-1, 0))) ToggleAll();
 
                     ImGui.TableNextColumn();
-                    if (ImGui.Button("Shards", new Vector2(-1, 0))) ToggleCol(global::FCCH.Managers.CrystalManager.ShardIds);
+                    if (ImGui.Button("碎晶", new Vector2(-1, 0))) ToggleCol(global::FCCH.Managers.CrystalManager.ShardIds);
 
                     ImGui.TableNextColumn();
-                    if (ImGui.Button("Crystals", new Vector2(-1, 0))) ToggleCol(global::FCCH.Managers.CrystalManager.CrystalIds);
+                    if (ImGui.Button("水晶", new Vector2(-1, 0))) ToggleCol(global::FCCH.Managers.CrystalManager.CrystalIds);
 
                     ImGui.TableNextColumn();
-                    if (ImGui.Button("Clusters", new Vector2(-1, 0))) ToggleCol(global::FCCH.Managers.CrystalManager.ClusterIds);
+                    if (ImGui.Button("晶簇", new Vector2(-1, 0))) ToggleCol(global::FCCH.Managers.CrystalManager.ClusterIds);
                     ImGui.PopStyleColor(2);
 
                     for (int r = 0; r < 6; r++)
@@ -131,7 +131,7 @@ namespace FCCH.UI
 
                 ImGui.Spacing();
 
-                string legendText = "Left click: Toggle On/Off  |  Right click: Custom amount  |  * = Overrides Global";
+                string legendText = "左鍵:開/關  |  右鍵:自訂數量  |  * = 覆寫全域";
                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey);
                 float legendWidth = ImGui.CalcTextSize(legendText).X;
                 ImGui.SetCursorPosX((ImGui.GetContentRegionAvail().X - legendWidth) * 0.5f);
@@ -152,9 +152,9 @@ namespace FCCH.UI
                 if (!gate.CanRun) ImGui.BeginDisabled();
 
                 ImGui.PushStyleColor(ImGuiCol.ButtonHovered, style.Colors[(int)ImGuiCol.TabHovered]);
-                if (ImGui.Button("Deposit Crystals", new Vector2(btnWidth, 0))) _helper.TryStartUserAction(() => _manager.Deposit(true));
+                if (ImGui.Button("存入水晶", new Vector2(btnWidth, 0))) _helper.TryStartUserAction(() => _manager.Deposit(true));
                 ImGui.SameLine();
-                if (ImGui.Button("Withdraw Crystals", new Vector2(btnWidth, 0))) _helper.TryStartUserAction(() => _manager.Withdraw(true));
+                if (ImGui.Button("取出水晶", new Vector2(btnWidth, 0))) _helper.TryStartUserAction(() => _manager.Withdraw(true));
                 ImGui.PopStyleColor();
                 if (!gate.CanRun) ImGui.EndDisabled();
                 if (!gate.CanRun && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(gate.Reason);
@@ -220,7 +220,7 @@ namespace FCCH.UI
 
                 int val = _editingValues[id];
 
-                ImGui.Text("Custom Keep Amount:");
+                ImGui.Text("自訂保留數量：");
                 ImGui.SetNextItemWidth(120);
                 if (ImGui.InputInt("##CustomKeep", ref val))
                 {
@@ -236,7 +236,7 @@ namespace FCCH.UI
 
                 ImGui.SameLine();
                 ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0.8f, 0.2f, 0.2f, 1f));
-                if (ImGui.Button("Clear", new Vector2(55, 0)))
+                if (ImGui.Button("清除", new Vector2(55, 0)))
                 {
                     _configuration.CrystalConfig.CustomKeepAmounts.Remove(id);
                     _configuration.Save();

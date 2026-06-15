@@ -110,7 +110,7 @@ namespace FCCH.Managers
 
             MoveManager.Update();
             
-            if (isChestOpen)
+            if (isChestOpen && FCCH.Common.BuildFlags.EnableChestAccess)
             {
                  var currentPage = ChestManager.GetCurrentFCPage(addon);
                  if (currentPage != InventoryType.Invalid)
@@ -131,7 +131,7 @@ namespace FCCH.Managers
             {
                 if ((DateTime.UtcNow - _pendingCommandQueuedAtUtc) > PendingCommandTimeout)
                 {
-                    CancelPendingCommand("FCCH: chest did not open in time, command cancelled.");
+                    CancelPendingCommand("部隊寶物庫未及時開啟,指令已取消。");
                 }
                 else if (!_isWaitingForIndex && _indexer.IsIdle)
                 {
@@ -172,23 +172,23 @@ namespace FCCH.Managers
                  
                  if (OperationManager.LastDepositOverflow.Count > 0)
                  {
-                     ChatHelper.Warning("Overflow (FC stacks full):");
+                     ChatHelper.Warning("容納不下(部隊堆疊已滿):");
                      foreach (var (itemId, remaining) in OperationManager.LastDepositOverflow)
                      {
-                         ChatHelper.Warning($"  - {GetItemName(itemId)}: {remaining} remaining");
+                         ChatHelper.Warning($"  - {GetItemName(itemId)}：剩餘 {remaining}");
                      }
                  }
                  
                  if (OperationManager.LastWithdrawOverflow.Count > 0)
                  {
-                     ChatHelper.Warning("Overflow (inventory full):");
+                     ChatHelper.Warning("容納不下(背包已滿):");
                      foreach (var (itemId, remaining) in OperationManager.LastWithdrawOverflow)
                      {
-                         ChatHelper.Warning($"  - {GetItemName(itemId)}: {remaining} remaining");
+                         ChatHelper.Warning($"  - {GetItemName(itemId)}：剩餘 {remaining}");
                      }
                  }
                  
-                 ChatHelper.Info("Operation complete.");
+                 ChatHelper.Info("操作完成。");
                  
                 if (!MoveManager.SuppressCompletionSound)
                     SoundHelper.PlayCompletionSound(_configuration);
@@ -224,7 +224,7 @@ namespace FCCH.Managers
             _wasProcessing = false;
             _wasMoving = false;
             CompanyChestClosedDuringOperation?.Invoke();
-            ChatHelper.Warning("FCCH stopped because the company chest was closed.");
+            ChatHelper.Warning("部隊寶物庫已關閉,FCCH 已停止。");
             DebugLog("[Safety] Aborted active FCCH work because the company chest closed.");
         }
 
@@ -253,11 +253,11 @@ namespace FCCH.Managers
 
         public ActionGateResult CanStartUserAction()
         {
-            if (IsUnavailable()) return Blocked("FCCH cannot operate: not logged in or no Free Company.");
-            if (_pendingCommand != null) return Blocked("FCCH is waiting for the company chest to finish opening.");
-            if (ExternalOperationActive?.Invoke() == true) return Blocked("FCCH is running an organizer job.");
-            if (MoveManager.IsProcessing) return Blocked("FCCH is moving items.");
-            if (_isWaitingForIndex || !_indexer.IsIdle) return Blocked("FCCH is scanning the company chest.");
+            if (IsUnavailable()) return Blocked("目前無法操作 FCCH:尚未登入或沒有部隊。");
+            if (_pendingCommand != null) return Blocked("FCCH 正在等待部隊寶物庫開啟。");
+            if (ExternalOperationActive?.Invoke() == true) return Blocked("FCCH 正在執行整理作業。");
+            if (MoveManager.IsProcessing) return Blocked("FCCH 正在搬移物品。");
+            if (_isWaitingForIndex || !_indexer.IsIdle) return Blocked("FCCH 正在掃描部隊寶物庫。");
             return new ActionGateResult(true, "");
         }
 
@@ -338,7 +338,7 @@ namespace FCCH.Managers
                 }
                 else
                 {
-                    ChatHelper.Error("Could not find 'Company Chest' nearby.");
+                    ChatHelper.Error("附近找不到「部隊寶物庫」。");
                     _pendingCommand = null;
                     _isWaitingForIndex = false;
                     _pendingCommandQueuedAtUtc = DateTime.MinValue;
@@ -363,7 +363,7 @@ namespace FCCH.Managers
             var list = BuildWorkshopMaterialList();
             if (list.Count == 0)
             {
-                ChatHelper.Info("Workshop list is empty.");
+                ChatHelper.Info("工房清單是空的。");
                 return;
             }
 
@@ -502,6 +502,12 @@ namespace FCCH.Managers
         
         private void OnChestOpened(AddonEvent type, AddonArgs args)
         {
+            if (!FCCH.Common.BuildFlags.EnableChestAccess)
+            {
+                FCCH.Common.FCCHLog.Info("[FCCH] Chest opened, but chest access is disabled for this build (EnableChestAccess=false); skipping scan.");
+                return;
+            }
+
             if (_indexer.IsIdle)
             {
                 FCCH.Common.FCCHLog.Info("[FCCH] Chest opened. Starting full scan...");

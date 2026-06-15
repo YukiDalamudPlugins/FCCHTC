@@ -1,0 +1,71 @@
+name: Release Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - tc
+      - api12-tc
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to create a GitHub Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # The CI runner has no local TC Dalamud, and the goatcorp public distrib is API15.
+      # Set the repo variable DALAMUD_DISTRIB_URL (Settings > Secrets and variables > Actions
+      # > Variables) to a zip of the TC / API12 Dalamud "Hooks/dev" libraries
+      # (DalamudApiLevel 12 — must match FCCH.json). The build overrides DalamudLibPath to it.
+      - name: Download Dalamud (TC / API12)
+        shell: pwsh
+        env:
+          DALAMUD_DISTRIB_URL: ${{ vars.DALAMUD_DISTRIB_URL }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:DALAMUD_DISTRIB_URL)) {
+            Write-Error "Set the DALAMUD_DISTRIB_URL repo variable to the TC/API12 Dalamud distrib zip URL."
+            exit 1
+          }
+          $dir = Join-Path $env:RUNNER_TEMP 'dalamud'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          Invoke-WebRequest -Uri $env:DALAMUD_DISTRIB_URL -OutFile (Join-Path $dir 'dalamud.zip')
+          Expand-Archive -Force -Path (Join-Path $dir 'dalamud.zip') -DestinationPath $dir
+          if (-not (Test-Path (Join-Path $dir 'Dalamud.dll'))) {
+            Write-Error "Dalamud.dll not found in the extracted distrib ($dir). Check the zip structure / DALAMUD_DISTRIB_URL."
+            Get-ChildItem $dir | ForEach-Object { Write-Host $_.Name }
+            exit 1
+          }
+          "DALAMUD_HOME=$dir" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Build (Release)
+        shell: pwsh
+        run: |
+          $lib = "$env:DALAMUD_HOME\"
+          dotnet build FCCH.csproj -c Release --nologo -p:DalamudLibPath=$lib
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FCCH
+          path: releases/FCCH.zip
+          if-no-files-found: error
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: releases/FCCH.zip
+          generate_release_notes: true

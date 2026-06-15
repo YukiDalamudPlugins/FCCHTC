@@ -66,9 +66,9 @@ namespace FCCH.UI
 
         public void Draw()
         {
-            if (ImGui.BeginCombo("Select Item", _selectedItem.HasValue ? _selectedItem.Value.Name.ToString() : "Select..."))
+            if (ImGui.BeginCombo("選擇物品", _selectedItem.HasValue ? _selectedItem.Value.Name.ToString() : "選擇..."))
             {
-                ImGui.InputTextWithHint("##Search", "Search...", ref _searchQuery, 100);
+                ImGui.InputTextWithHint("##Search", "搜尋...", ref _searchQuery, 100);
                 
                 foreach (var item in _filteredItems)
                 {

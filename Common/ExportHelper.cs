@@ -90,11 +90,11 @@ namespace FCCH.Common
         {
             return result switch
             {
-                ImportResult.EmptyClipboard => "Clipboard is empty.",
-                ImportResult.WrongTabType => $"Clipboard contains data for a different tab (not {tabName}).",
-                ImportResult.InvalidFormat => "Clipboard does not contain valid FCCH export data.",
-                ImportResult.ParseError => "Failed to parse export data. It may be corrupted.",
-                _ => "Unknown error."
+                ImportResult.EmptyClipboard => "剪貼簿是空的。",
+                ImportResult.WrongTabType => $"剪貼簿的資料屬於其他分頁(不是{tabName})。",
+                ImportResult.InvalidFormat => "剪貼簿沒有有效的 FCCH 匯出資料。",
+                ImportResult.ParseError => "無法解析匯出資料,可能已損毀。",
+                _ => "未知錯誤。"
             };
         }
 

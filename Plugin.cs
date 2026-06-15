@@ -47,7 +47,7 @@ namespace FCCH
         private IPCProvider IPC { get; init; }
 
         public static Configuration Configuration { get; private set; } = null!;
-        private const string CommandHelpMessage = "Opens settings.\n- Deposit: da (All) | da1-da5 (Tabs) | ds (Custom) | dd (Dupes) | dc (Crystals)\n- Withdraw: wa (All) | wa1-wa5 (Tabs) | ws (Custom) | wp (Workshop) | wc (Crystals)\n- Gil: gd (Deposit) | gw (Withdraw) - e.g. 5k, 1m, all\n- Info: info";
+        private const string CommandHelpMessage = "開啟設定。\n- 存入：da(全部)| da1-da5(分頁)| ds(自訂)| dd(重複)| dc(水晶)\n- 取出：wa(全部)| wa1-wa5(分頁)| ws(自訂)| wp(工房)| wc(水晶)\n- 金幣：gd(存入)| gw(取出)- 例:5k、1m、all\n- 資訊：info";
 
         public Plugin()
         {
@@ -187,10 +187,10 @@ namespace FCCH
                         
                         var tabString = string.Join(", ", System.Linq.Enumerable.Select(tabs, 
                             t => t.ToString().Replace("FreeCompanyPage", "")));
-                        ChatHelper.Info($"FC Rank: {rank}. Available Tabs: {tabString}");
+                        ChatHelper.Info($"部隊階級：{rank}。可用分頁：{tabString}");
 
                         var sb = new System.Text.StringBuilder();
-                        sb.Append($"Permissions: ");
+                        sb.Append($"權限：");
                         
                         foreach (var tab in tabs)
                         {
@@ -202,7 +202,7 @@ namespace FCCH
                         if (sb.Length > 3) sb.Length -= 3;
                         
                         ChatHelper.Info(sb.ToString());
-                        ChatHelper.Info($"Gil: {GilManager.GetPermissionString()}");
+                        ChatHelper.Info($"金幣：{GilManager.GetPermissionString()}");
                     });
                     break;
                 case "gd":
@@ -220,7 +220,7 @@ namespace FCCH
                         byte? overrideRank = null;
                         if (parts.Length > 1 && byte.TryParse(parts[1], out var r)) overrideRank = r;
                         ChestHelper.DumpRawPermissions(overrideRank);
-                        ChatHelper.Info("FC permission dump written to log (/xllog).");
+                        ChatHelper.Info("部隊權限資訊已輸出到 log(/xllog)。");
                     });
                     break;
                 case "accessprobe":
@@ -230,10 +230,10 @@ namespace FCCH
                 case "debug":
                     Configuration.DebugMode = !Configuration.DebugMode;
                     Configuration.Save();
-                    ChatHelper.Info($"Debug Mode: {(Configuration.DebugMode ? "ON" : "OFF")}");
+                    ChatHelper.Info($"除錯模式：{(Configuration.DebugMode ? "開啟" : "關閉")}");
                     break;
                 default:
-                    ChatHelper.Info($"Unknown FCCH command: {subCommand}. Use /fcch help.");
+                    ChatHelper.Info($"未知的 FCCH 指令：{subCommand}。請輸入 /fcch help。");
                     break;
             }
         }

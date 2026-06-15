@@ -74,7 +74,7 @@ namespace FCCH.Managers
             if (!depositable.Contains(targetTab))
             {
                 int tabNum = ((int)targetTab - (int)InventoryType.FreeCompanyPage1) + 1;
-                ChatHelper.Warning($"Tab {tabNum} is not depositable (permissions or unavailable).");
+                ChatHelper.Warning($"分頁 {tabNum} 無法存入(權限不足或不可用)。");
                 return new List<MoveOperation>();
             }
             return CalculateDepositMovesCore(chestManager, config, playerInvTypes, new List<InventoryType> { targetTab });

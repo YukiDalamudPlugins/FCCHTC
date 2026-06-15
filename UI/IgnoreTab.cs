@@ -47,13 +47,13 @@ namespace FCCH.UI
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.TextDisabled($"Ignored Items ({itemCount})");
+                ImGui.TextDisabled($"忽略的物品({itemCount})");
 
                 ImGui.TableNextColumn();
                 if (itemCount > 0)
                 {
                     ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-                    if (ImGui.Button("Clear List", new Vector2(-1, 0)))
+                    if (ImGui.Button("清空清單", new Vector2(-1, 0)))
                     {
                         _helper.Configuration.IgnoreList.Clear();
                         _helper.Configuration.Save();
@@ -68,7 +68,7 @@ namespace FCCH.UI
             if (_helper.Configuration.IgnoreList.Count == 0)
             {
                 ImGui.BeginChild("IgnoreListScroll", new Vector2(0, -footerHeight), true);
-                ImGui.TextDisabled("No items in ignore list. Use search below to add items.");
+                ImGui.TextDisabled("忽略清單沒有物品。用下方搜尋加入物品。");
                 ImGui.EndChild();
             }
             else
@@ -77,8 +77,8 @@ namespace FCCH.UI
                 {
                     if (ImGui.BeginTable("IgnoreListTable", 3, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY))
                     {
-                        ImGui.TableSetupColumn("Item", ImGuiTableColumnFlags.WidthStretch);
-                        ImGui.TableSetupColumn("Mode", ImGuiTableColumnFlags.WidthFixed, CellActionButton.ColumnWidth);
+                        ImGui.TableSetupColumn("物品", ImGuiTableColumnFlags.WidthStretch);
+                        ImGui.TableSetupColumn("模式", ImGuiTableColumnFlags.WidthFixed, CellActionButton.ColumnWidth);
                         ImGui.TableSetupColumn("##del", ImGuiTableColumnFlags.WidthFixed, CellActionButton.ColumnWidth);
                         ImGui.TableHeadersRow();
 
@@ -110,7 +110,7 @@ namespace FCCH.UI
                             DrawModeButton(gItem.Item);
 
                             ImGui.TableNextColumn();
-                            CellActionButton.DrawIcon(FontAwesomeIcon.Minus, "delete", "Remove", () =>
+                            CellActionButton.DrawIcon(FontAwesomeIcon.Minus, "delete", "移除", () =>
                             {
                                 _helper.Configuration.IgnoreList.Remove(gItem.Item);
                                 _helper.Configuration.Save();
@@ -132,7 +132,7 @@ namespace FCCH.UI
 
         private void DrawModeButton(Configuration.IgnoredItem item)
         {
-            CellActionButton.DrawIcon(GetModeIcon(item), "mode", $"{GetModeLabel(item)}\nClick to cycle mode", () =>
+            CellActionButton.DrawIcon(GetModeIcon(item), "mode", $"{GetModeLabel(item)}\n點擊切換模式", () =>
             {
                 CycleMode(item);
                 _helper.Configuration.Save();
@@ -169,10 +169,10 @@ namespace FCCH.UI
 
         private static string GetModeLabel(Configuration.IgnoredItem item)
         {
-            if (item.IgnoreEntrust && item.IgnoreWithdraw) return "Skip Deposit and Withdraw";
-            if (item.IgnoreEntrust) return "Skip Deposit";
-            if (item.IgnoreWithdraw) return "Skip Withdraw";
-            return "Not Ignored";
+            if (item.IgnoreEntrust && item.IgnoreWithdraw) return "略過存入與取出";
+            if (item.IgnoreEntrust) return "略過存入";
+            if (item.IgnoreWithdraw) return "略過取出";
+            return "未忽略";
         }
 
         private static FontAwesomeIcon GetModeIcon(Configuration.IgnoredItem item)
@@ -188,7 +188,7 @@ namespace FCCH.UI
             ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, new Vector4(0.2f, 0.2f, 0.2f, 1f));
 
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-            if (ImGui.BeginCombo("##ignoreSearch", "Search and add items to ignore...", ImGuiComboFlags.HeightLarge))
+            if (ImGui.BeginCombo("##ignoreSearch", "搜尋並加入要忽略的物品...", ImGuiComboFlags.HeightLarge))
             {
                 ImGui.PopStyleColor(2);
                 ImGui.SetNextItemWidth(-1);
@@ -208,7 +208,7 @@ namespace FCCH.UI
                 }
                 else
                 {
-                    ImGui.TextDisabled("No results found");
+                    ImGui.TextDisabled("找不到結果");
                 }
                 ImGui.EndCombo();
             }
@@ -265,7 +265,7 @@ namespace FCCH.UI
             float avail = ImGui.GetContentRegionAvail().X;
             ImGui.SetNextItemWidth(avail * 0.45f);
 
-            if (ImGui.BeginCombo("##ignorePresetSel", string.IsNullOrEmpty(_selectedPresetName) ? "Load Preset..." : _selectedPresetName))
+            if (ImGui.BeginCombo("##ignorePresetSel", string.IsNullOrEmpty(_selectedPresetName) ? "載入預設集..." : _selectedPresetName))
             {
                 foreach (var presetName in _helper.Configuration.IgnorePresets.Keys)
                 {
@@ -288,7 +288,7 @@ namespace FCCH.UI
             }
             ImGui.PopFont();
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Save Current Ignore List as Preset");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("將目前的忽略清單儲存為預設集");
 
             ImGui.SameLine(0, 5);
 
@@ -305,44 +305,44 @@ namespace FCCH.UI
             }
             ImGui.PopFont();
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Delete Preset");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("刪除預設集");
 
             ImGui.SameLine(0, 15);
 
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-            if (ImGui.Button("Export"))
+            if (ImGui.Button("匯出"))
             {
                 if (Common.ExportHelper.Export(Common.ExportHelper.HEADER_IGNORE, _helper.Configuration.IgnoreList))
                 {
-                    Common.ChatHelper.Info("Ignore list exported to clipboard.");
+                    Common.ChatHelper.Info("忽略清單已匯出到剪貼簿。");
                 }
                 else
                 {
-                    Common.ChatHelper.Warning("Failed to export ignore list.");
+                    Common.ChatHelper.Warning("匯出忽略清單失敗。");
                 }
             }
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Export to clipboard");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("匯出到剪貼簿");
 
             ImGui.SameLine(0, 5);
 
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ImGui.GetStyle().Colors[(int)ImGuiCol.TabHovered]);
-            if (ImGui.Button("Import"))
+            if (ImGui.Button("匯入"))
             {
                 var (result, data) = Common.ExportHelper.Import<List<Configuration.IgnoredItem>>(Common.ExportHelper.HEADER_IGNORE);
                 if (result == Common.ExportHelper.ImportResult.Success && data != null)
                 {
                     _helper.Configuration.IgnoreList = data;
                     _helper.Configuration.Save();
-                    Common.ChatHelper.Info($"Imported {data.Count} items to Ignore list.");
+                    Common.ChatHelper.Info($"已匯入 {data.Count} 個物品到忽略清單。");
                 }
                 else
                 {
-                    Common.ChatHelper.Warning(Common.ExportHelper.GetErrorMessage(result, "Ignore"));
+                    Common.ChatHelper.Warning(Common.ExportHelper.GetErrorMessage(result, "忽略清單"));
                 }
             }
             ImGui.PopStyleColor();
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Import from clipboard");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip("從剪貼簿匯入");
         }
 
         private void LoadPreset(string name)
@@ -363,16 +363,16 @@ namespace FCCH.UI
 
         private void DrawSavePresetModal()
         {
-            if (_showSavePresetModal) ImGui.OpenPopup("Save Ignore Preset");
+            if (_showSavePresetModal) ImGui.OpenPopup("儲存忽略預設集");
 
-            if (ImGui.BeginPopupModal("Save Ignore Preset", ref _showSavePresetModal, ImGuiWindowFlags.AlwaysAutoResize))
+            if (ImGui.BeginPopupModal("儲存忽略預設集", ref _showSavePresetModal, ImGuiWindowFlags.AlwaysAutoResize))
             {
-                ImGui.Text("Enter Preset Name:");
+                ImGui.Text("輸入預設集名稱：");
                 ImGui.InputText("##igPresetName", ref _presetNameInput, 64);
 
                 ImGui.Spacing();
 
-                if (ImGui.Button("Save", new Vector2(120, 0)))
+                if (ImGui.Button("儲存", new Vector2(120, 0)))
                 {
                     if (!string.IsNullOrWhiteSpace(_presetNameInput))
                     {
@@ -392,7 +392,7 @@ namespace FCCH.UI
                     }
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Cancel", new Vector2(120, 0)))
+                if (ImGui.Button("取消", new Vector2(120, 0)))
                 {
                     _showSavePresetModal = false;
                     ImGui.CloseCurrentPopup();

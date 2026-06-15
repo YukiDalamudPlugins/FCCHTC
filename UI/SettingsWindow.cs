@@ -38,7 +38,7 @@ namespace FCCH.UI
         private bool _snapPending;
 
         public SettingsWindow(ChestHelper helper, WorkshopCache cache, IGameGui gameGui, Configuration configuration, OrgService orgService, WorkshoppaIPC workshoppaIPC)
-            : base("FCCH Settings###SettingsWindow", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+            : base("FCCH 設定###SettingsWindow", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
         {
             _helper = helper;
             _gameGui = gameGui;
@@ -64,7 +64,7 @@ namespace FCCH.UI
             _kofiButton = new TitleBarButton
             {
                 Icon = FontAwesomeIcon.Heart,
-                ShowTooltip = () => { ImGui.SetTooltip("Support on Ko-Fi"); },
+                ShowTooltip = () => { ImGui.SetTooltip("在 Ko-Fi 上支持作者"); },
                 Priority = int.MinValue,
                 IconOffset = new Vector2(1.5f, 1),
                 Click = _ => OpenKoFiLink(),
@@ -75,8 +75,8 @@ namespace FCCH.UI
             {
                 Icon = _configuration.IsWindowLocked ? FontAwesomeIcon.Lock : FontAwesomeIcon.LockOpen,
                 ShowTooltip = () => ImGui.SetTooltip(_configuration.IsWindowLocked
-                    ? "Settings window is locked to the Company Chest\nClick to unlock and drag freely"
-                    : "Settings window is unlocked\nClick to lock current position"),
+                    ? "設定視窗已鎖定在部隊寶物庫旁\n點擊解鎖即可自由拖曳"
+                    : "設定視窗未鎖定\n點擊以鎖定目前位置"),
                 Priority = 0,
                 Click = _ => ToggleSettingsLock(),
             };
@@ -84,7 +84,7 @@ namespace FCCH.UI
             _settingsSnapButton = new TitleBarButton
             {
                 Icon = FontAwesomeIcon.Crosshairs,
-                ShowTooltip = () => ImGui.SetTooltip("Snap Settings window back to the Company Chest"),
+                ShowTooltip = () => ImGui.SetTooltip("將設定視窗貼回部隊寶物庫旁"),
                 Priority = 1,
                 Click = _ => SnapSettingsToChest(),
             };
@@ -268,37 +268,37 @@ namespace FCCH.UI
         {
             if (ImGui.BeginTabBar("SettingsTabs", ImGuiTabBarFlags.None))
             {
-                if (ImGui.BeginTabItem("General"))
+                if (ImGui.BeginTabItem("一般"))
                 {
                      _generalTab.Draw();
                      ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("Ignore"))
+                if (ImGui.BeginTabItem("忽略"))
                 {
                     _ignoreTab.Draw();
                     ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("Crystals"))
+                if (ImGui.BeginTabItem("水晶"))
                 {
                     _crystalsTab.Draw();
                     ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("Custom"))
+                if (ImGui.BeginTabItem("自訂"))
                 {
                     _customTab.Draw();
                     ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("Organizer"))
+                if (ImGui.BeginTabItem("整理"))
                 {
                     _organizerTab.Draw();
                     ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("Workshop"))
+                if (ImGui.BeginTabItem("工房"))
                 {
                     _workshopTab.Draw();
                     ImGui.EndTabItem();
@@ -318,7 +318,7 @@ namespace FCCH.UI
                 }
                 ImGui.PopFont(); 
                 
-                if (ImGui.IsItemHovered()) ImGui.SetTooltip("Switch orientation relative to FC Chest");
+                if (ImGui.IsItemHovered()) ImGui.SetTooltip("切換相對部隊寶物庫的方向");
                 
                 ImGui.EndTabBar();
             }

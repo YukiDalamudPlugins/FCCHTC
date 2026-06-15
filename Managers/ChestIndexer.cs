@@ -44,7 +44,7 @@ namespace FCCH.Managers
                 _chestManager.ClearPage(tab);
 
             if (restricted.Count > 0)
-                ChatHelper.Info($"Skipping indexing restricted sections: {FormatSections(restricted)}");
+                ChatHelper.Info($"略過建立索引的受限區域：{FormatSections(restricted)}");
 
             _queue = new Queue<InventoryType>(tabs.Except(restricted));
 
@@ -98,7 +98,7 @@ namespace FCCH.Managers
                     else
                     {
                         _phase = IndexingPhase.Idle;
-                        ChatHelper.Info($"Indexed {_tabCount} tabs.");
+                        ChatHelper.Info($"已建立 {_tabCount} 個分頁的索引。");
 
                         if (_configuration.DebugMode)
                         {
@@ -112,7 +112,7 @@ namespace FCCH.Managers
                 }
                 else if ((DateTime.Now - _lastActionTime).TotalSeconds > _configuration.IndexingTimeoutSeconds)
                 {
-                    ChatHelper.Error("Indexing synchronization timed out. Please try again.");
+                    ChatHelper.Error("索引同步逾時,請再試一次。");
                     _phase = IndexingPhase.Idle;
                 }
             }

@@ -62,7 +62,7 @@ namespace FCCH.Managers.Gil
                 addon->FireCallback(1, values);
 
                 _pendingTransaction = null;
-                ChatHelper.Info($"{(transaction.IsDeposit ? "Deposited" : "Withdrew")} {transaction.Amount:N0} Gil.");
+                ChatHelper.Info($"{(transaction.IsDeposit ? "已存入" : "已取出")} {transaction.Amount:N0} 金幣。");
             }
             catch (Exception ex)
             {
@@ -92,7 +92,7 @@ namespace FCCH.Managers.Gil
                 Callback.Fire(addon, true, 3, (uint)transaction.Amount);
                 Callback.Fire(addon, true, 0);
                 _pendingTransaction = null;
-                ChatHelper.Info($"Deposited {transaction.Amount:N0} Gil.");
+                ChatHelper.Info($"已存入 {transaction.Amount:N0} 金幣。");
             }
             catch (Exception ex)
             {
@@ -210,7 +210,7 @@ namespace FCCH.Managers.Gil
         {
             if (string.IsNullOrWhiteSpace(args))
             {
-                ChatHelper.Error("Usage: /fcch gd <amount> (e.g., 15k, 5m, all)");
+                ChatHelper.Error("用法：/fcch gd <數量>(例:15k、5m、all)");
                 return;
             }
 
@@ -220,7 +220,7 @@ namespace FCCH.Managers.Gil
             var access = _chestManager.GetChestAccess(FFXIVClientStructs.FFXIV.Client.Game.InventoryType.FreeCompanyGil);
             if (access != Constants.FCPermissions.FULL_ACCESS && access != Constants.FCPermissions.DEPOSIT_ONLY)
             {
-                ChatHelper.Info("Skipping gd for gil.");
+                ChatHelper.Info("略過金幣的 gd。");
                 return;
             }
 
@@ -237,7 +237,7 @@ namespace FCCH.Managers.Gil
         {
             if (string.IsNullOrWhiteSpace(args))
             {
-                ChatHelper.Error("Usage: /fcch gw <amount> (e.g., 15k, 5m, all)");
+                ChatHelper.Error("用法：/fcch gw <數量>(例:15k、5m、all)");
                 return;
             }
 
@@ -246,7 +246,7 @@ namespace FCCH.Managers.Gil
 
             if (_chestManager.GetChestAccess(FFXIVClientStructs.FFXIV.Client.Game.InventoryType.FreeCompanyGil) != Constants.FCPermissions.FULL_ACCESS)
             {
-                ChatHelper.Info("Skipping gw for gil.");
+                ChatHelper.Info("略過金幣的 gw。");
                 return;
             }
 
