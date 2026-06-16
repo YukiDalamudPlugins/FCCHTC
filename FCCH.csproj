@@ -4,8 +4,6 @@
     <Authors>Nexai</Authors>
     <Version>2.3.2.1</Version>
     <AssemblyVersion>2.3.2.1</AssemblyVersion>
-    <DalamudLibPath>$(AppData)\XIVTheCalamity\Dalamud\Hooks\dev\</DalamudLibPath>
-    <AssemblySearchPaths>$(DalamudLibPath);{GAC};{TargetFrameworkDirectory};{RawFileName}</AssemblySearchPaths>
     <Description>Free Company Chest Helper. Automate deposits, withdrawals, organization, crystals, workshop project pulls, and custom item lists.</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Nexaii/FCCH</PackageProjectUrl>
@@ -15,6 +13,15 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <!-- Local dev builds against the TC (Calamity) Dalamud at its install path. In CI, set the
+       DALAMUD_HOME env var to a downloaded API12 Dalamud and the SDK (Sdk.props) resolves
+       DalamudLibPath from it, so we only hardcode the Calamity path when DALAMUD_HOME is unset.
+       Prepend DalamudLibPath to AssemblySearchPaths so the API12 Dalamud/ImGui resolve first. -->
+  <PropertyGroup Condition="'$(DALAMUD_HOME)' == ''">
+    <DalamudLibPath>$(AppData)\XIVTheCalamity\Dalamud\Hooks\dev\</DalamudLibPath>
+    <AssemblySearchPaths>$(DalamudLibPath);$(AssemblySearchPaths)</AssemblySearchPaths>
   </PropertyGroup>
 
   <ItemGroup>
